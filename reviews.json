@@ -1,0 +1,12 @@
+[
+  {
+    "_example": true,
+    "_howto": "EDIT ME: copy this object, remove the _example line, fill in real values, save. Entries show up as carousel cards on index.html. status must be 'approved' (or omitted) to display; 'pending' keeps it hidden. The _example entry below is ignored by the site.",
+    "rating": 5,
+    "name": "Your Name",
+    "role": "Channel or role",
+    "message": "Paste an approved review here and it will appear as a card in the testimonial carousel.",
+    "timestamp": 0,
+    "status": "approved"
+  }
+]

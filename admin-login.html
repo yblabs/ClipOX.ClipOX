@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <!-- Never index the admin login / dashboard -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Admin sign in · Framewright</title>
+
+  <!-- shared site design system -->
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <!-- admin-specific styles -->
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+
+<body class="admin-login">
+  <!-- =============================================================== CARD -->
+  <main class="login-wrap">
+    <section class="login-card" aria-labelledby="loginTitle">
+
+      <!-- wordmark: same markup/classes as the site header (theme.css) -->
+      <a class="mark" href="index.html" aria-label="Framewright home">
+        <svg class="mark-glyph" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 42 42 22" stroke="var(--blue)" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+        <span class="mark-word">Frame<span class="mark-tint">wright</span></span>
+      </a>
+
+      <header class="login-head">
+        <p class="k-label">Restricted area</p>
+        <h1 id="loginTitle">Admin <span class="tint">sign in</span></h1>
+        <p class="sub">Feedback moderation console. Sessions last 2&nbsp;hours.</p>
+      </header>
+
+      <!-- NOTE: no credentials live here — they are read by the server from .env -->
+      <form class="login-form" id="loginForm" novalidate autocomplete="on">
+        <div>
+          <label class="k-label" for="adminId">Admin ID or email</label>
+          <div class="field">
+            <input class="adm-input" id="adminId" name="adminId" type="text"
+                   autocomplete="username" spellcheck="false" autofocus required>
+          </div>
+        </div>
+
+        <div>
+          <label class="k-label" for="password">Password</label>
+          <div class="field field-row">
+            <input class="adm-input" id="password" name="password" type="password"
+                   autocomplete="current-password" required style="padding-right:70px">
+            <button class="reveal" id="togglePw" type="button"
+                    aria-pressed="false" aria-controls="password">Show</button>
+          </div>
+        </div>
+
+        <!-- inline error / lockout message -->
+        <p class="form-err" id="loginErr" role="alert" aria-live="assertive" hidden></p>
+
+        <button class="adm-btn primary block" id="loginBtn" type="submit">
+          <span class="btn-label">Sign in</span>
+        </button>
+      </form>
+
+      <!-- shown when this URL is served by something other than the Node
+           server (e.g. the dev server on :8000), which has no admin API -->
+      <div class="api-missing" id="apiMissing" role="alert" hidden>
+        <span class="glyph" aria-hidden="true">↗</span>
+        <h3>The admin console lives on the Node server</h3>
+        <p>
+          This address only serves the site files, so it has no admin API and
+          cannot hold a session. Open the console on the admin server instead:
+        </p>
+        <a class="adm-btn primary" id="apiLink" href="#">Open the admin console →</a>
+      </div>
+
+      <p class="fine">Protected area · every attempt is rate limited and logged.</p>
+    </section>
+  </main>
+
+  <!-- toasts (same pattern as the rest of the site) -->
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="assets/js/admin-login.js"></script>
+</body>
+</html>

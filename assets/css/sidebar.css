@@ -1,0 +1,26 @@
+/* ===========================================================================
+   Shared sidebar items — loaded by editor.html and clip-maker.html.
+   The colour variables differ per shell, so every value falls back to the
+   other shell's name; the same rules render identically in both.
+   =========================================================================== */
+
+[data-sidebar]{display:flex;flex-direction:column;gap:4px}
+
+.side-item{
+  display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;
+  color:var(--muted, var(--mut, #8ea49a));cursor:pointer;border:1px solid transparent;
+  background:none;width:100%;text-align:left;text-decoration:none;
+  font-size:14px;transition:.15s;
+}
+.side-item:hover{background:var(--panel, rgba(255,255,255,.05));color:var(--text, var(--txt, #e9f5ef))}
+.side-item.active{
+  background:var(--green-soft, rgba(0,255,156,.14));color:#d6fbee;
+  border-color:rgba(0,255,156,.3);
+}
+.side-item span.ico{width:20px;flex:0 0 20px;text-align:center}
+.side-item span.lbl{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.side-foot{
+  margin-top:auto;padding:10px;border-top:1px solid var(--line, rgba(255,255,255,.08));
+  color:var(--muted-2, var(--dim, #6b8078));font-size:12px;line-height:1.5;
+}

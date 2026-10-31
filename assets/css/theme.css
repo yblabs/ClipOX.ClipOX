@@ -1,0 +1,440 @@
+/* ==========================================================================
+   THEME — the shared design system for every page in this site.
+
+   Single source of truth for:
+     1. Design tokens  (colours, type, shape, motion, layout)
+     2. Shared base     (focus ring, selection, scrollbars, reduced motion)
+     3. Shared building blocks (glass, gradient border, skeleton, badges)
+     4. Floating pill navbar   — moved out of framecraft.css
+     5. Site footer            — moved out of framecraft.css
+
+   Load order on every page:
+       theme.css  ->  page stylesheet  ->  feedback.css
+   The page stylesheet therefore always wins on equal specificity, and these
+   shared rules only fill in what a page does not define itself.
+   ========================================================================== */
+
+/* ---------------------------------------------------- 1. Design tokens --- */
+:root{
+  /* surfaces — near-black with a cool cast */
+  --bg-0:#05080A;          /* page floor */
+  --bg-1:#0B1116;          /* raised panels */
+  --bg-2:#0E161C;          /* panel-in-panel */
+
+  /* accents */
+  --green:#00FF9C;         /* neon emerald */
+  --green-deep:#10B981;    /* softer emerald */
+  --blue:#1E90FF;          /* electric blue */
+  --blue-deep:#3B82F6;     /* deeper blue */
+  --amber:#FFC400;         /* status/beta flags only */
+
+  /* gradients */
+  --g-accent:linear-gradient(100deg,var(--green),var(--blue));
+  --g-fill:linear-gradient(180deg,var(--green),var(--green-deep));
+  --g-teal-blue:linear-gradient(120deg,#00FF9C,#1E90FF);
+
+  /* glass */
+  --glass:rgba(255,255,255,.045);
+  --glass-2:rgba(255,255,255,.07);
+  --line:rgba(255,255,255,.09);
+  --line-strong:rgba(255,255,255,.16);
+  --blur:18px;
+
+  /* type */
+  --font-display:"Space Grotesk",system-ui,sans-serif;
+  --font-body:"Inter",system-ui,sans-serif;
+  --txt:#E9F2F4;
+  --txt-dim:#A7B7C2;
+  --txt-faint:#7C8B96;
+
+  /* shape + motion */
+  --r-sm:12px;
+  --r-md:18px;
+  --r-lg:26px;
+  --pill:999px;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --t-fast:.18s var(--ease);
+  --t-med:.35s var(--ease);
+
+  /* layout */
+  --wrap:1140px;
+  --nav-h:64px;
+}
+
+
+/* ------------------------------------------------- 2. Shared base -------- */
+/* Low specificity on purpose (:where adds no weight) so page CSS still wins. */
+:where(:focus-visible){outline:2px solid var(--blue);outline-offset:3px;border-radius:6px}
+::selection{background:rgba(0,255,156,.28);color:#fff}
+
+*{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:99px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.3);background-clip:padding-box}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  html{scroll-behavior:auto}
+}
+
+
+/* -------------------------------------- 3. Shared building blocks -------- */
+/* Translucent panel used by cards, toolbars and menus across the site. */
+:where(.glass){
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+  border:1px solid var(--line);
+  border-radius:var(--r-md);
+  backdrop-filter:blur(var(--blur));
+  -webkit-backdrop-filter:blur(var(--blur));
+}
+
+/* 1px teal→blue gradient hairline; pairs with any opaque panel. */
+:where(.gborder){
+  position:relative;
+  border:1px solid transparent;
+  background-clip:padding-box;
+}
+:where(.gborder)::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  border-radius:inherit;
+  padding:1px;
+  background:var(--g-accent);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+          mask-composite:exclude;
+  pointer-events:none;
+  opacity:.6;
+}
+
+/* Loading skeleton with a slow sweep — used wherever content is pending. */
+:where(.skeleton){
+  position:relative;
+  overflow:hidden;
+  background:rgba(255,255,255,.06);
+  border-radius:10px;
+}
+:where(.skeleton)::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.09),transparent);
+  transform:translateX(-100%);
+  animation:fw-shimmer 1.35s infinite;
+}
+@keyframes fw-shimmer{to{transform:translateX(100%)}}
+
+/* Gradient headline fragment — used by every page's big headings. */
+.tint{
+  background:var(--g-accent);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+/* Uppercase field/eyebrow label used by the workspace pages. */
+.k-label{
+  display:block;
+  font-family:var(--font-display);
+  font-size:.68rem;
+  font-weight:600;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--txt-faint);
+}
+
+/* Beta / pro marker used in nav menus and cards. */
+:where(.chip-beta){
+  font-style:normal;
+  font-size:.6rem;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--amber);
+  background:rgba(255,196,0,.12);
+  border:1px solid rgba(255,196,0,.45);
+  border-radius:var(--pill);
+  padding:2px 7px;
+  translate:0 -1px;
+}
+
+
+/* ------------------------------------- 4. Floating pill navbar --------- */
+.masthead{
+  position:sticky;
+  top:0;
+  z-index:70;
+  padding:14px 0;
+  pointer-events:none;      /* only the pill itself catches the mouse */
+}
+.masthead::before{          /* soft scrim once content scrolls under it */
+  content:"";
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(5,8,10,.88),rgba(5,8,10,0));
+  opacity:0;
+  transition:opacity .4s var(--ease);
+  pointer-events:none;
+}
+.masthead.is-stuck::before{opacity:1}
+
+.masthead .pill{
+  pointer-events:auto;
+  position:relative;
+  width:min(var(--wrap),94vw);
+  margin-inline:auto;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:8px 10px 8px 16px;
+  min-height:var(--nav-h);
+  border-radius:var(--pill);
+  border:1px solid var(--line);
+  background:rgba(11,17,22,.62);
+  backdrop-filter:blur(var(--blur));
+  -webkit-backdrop-filter:blur(var(--blur));
+  box-shadow:0 18px 50px -30px rgba(0,0,0,.9);
+  transition:background .4s var(--ease),border-color .4s var(--ease),box-shadow .4s var(--ease);
+}
+.masthead.is-stuck .pill{
+  background:rgba(6,10,13,.82);
+  border-color:var(--line-strong);
+  box-shadow:0 22px 60px -34px rgba(0,0,0,1);
+}
+
+/* wordmark */
+.mark{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-display)}
+.mark-glyph{width:26px;height:26px;color:var(--green);flex:0 0 auto;transition:transform .5s var(--ease)}
+.mark:hover .mark-glyph{transform:rotate(90deg)}
+.mark-word{font-size:1.06rem;font-weight:700;letter-spacing:-.02em;color:#fff}
+.mark-tint{background:var(--g-accent);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* desktop menu */
+.masthead .menu{display:flex;align-items:center;gap:4px;margin-inline:auto}
+.masthead .m-item{position:relative}
+.masthead .m-link{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 14px;
+  border-radius:var(--pill);
+  font-size:.93rem;font-weight:500;
+  color:var(--txt-dim);
+  transition:color var(--t-fast),background var(--t-fast);
+}
+.masthead .m-link:hover,.masthead .m-item.open>.m-link{color:#fff;background:var(--glass-2)}
+.masthead .caret{width:10px;height:7px;transition:transform var(--t-fast)}
+.masthead .m-item.open .caret{transform:rotate(180deg)}
+
+.masthead .chip-beta{
+  font-style:normal;
+  font-size:.6rem;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--amber);
+  background:rgba(255,196,0,.12);
+  border:1px solid rgba(255,196,0,.45);
+  border-radius:var(--pill);
+  padding:2px 7px;
+  translate:0 -1px;
+}
+
+/* dropdown panels */
+.masthead .m-panel{
+  position:absolute;
+  top:calc(100% + 16px);
+  left:50%;
+  translate:-50% 0;
+  min-width:320px;
+  padding:14px;
+  border-radius:var(--r-md);
+  border:1px solid var(--line);
+  background:rgba(9,14,18,.92);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  box-shadow:0 34px 80px -34px rgba(0,0,0,.95);
+  opacity:0;visibility:hidden;
+  transform:translateY(10px);
+  transition:opacity .25s var(--ease),transform .25s var(--ease),visibility .25s;
+}
+.masthead .m-item.open .m-panel{opacity:1;visibility:visible;transform:none}
+.masthead .m-panel::before{   /* little glass notch */
+  content:"";
+  position:absolute;top:-6px;left:50%;
+  width:12px;height:12px;
+  translate:-50% 0;
+  rotate:45deg;
+  background:rgba(9,14,18,.95);
+  border-left:1px solid var(--line);
+  border-top:1px solid var(--line);
+}
+
+.masthead .panel-tag{
+  font-size:.7rem;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--txt-faint);
+  padding:2px 6px 10px;
+}
+.masthead .panel-note{
+  font-size:.82rem;
+  color:#FFDD9A;
+  background:rgba(255,196,0,.07);
+  border:1px dashed rgba(255,196,0,.45);
+  border-radius:var(--r-sm);
+  padding:9px 11px;
+  margin-bottom:8px;
+}
+
+.masthead .mega{width:min(600px,86vw)}
+.masthead .mega-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+
+.masthead .tile{
+  display:flex;align-items:flex-start;gap:11px;
+  padding:11px;
+  border-radius:14px;
+  border:1px solid transparent;
+  transition:background var(--t-fast),border-color var(--t-fast),transform var(--t-fast);
+}
+.masthead .tile:hover{background:var(--glass-2);border-color:rgba(0,255,156,.35);transform:translateY(-2px)}
+.masthead .tile strong{display:flex;align-items:center;gap:6px;font-size:.9rem;font-weight:600;color:#fff}
+.masthead .tile small{display:block;font-size:.78rem;color:var(--txt-faint);line-height:1.45;margin-top:2px}
+.masthead .tile.locked{cursor:default;opacity:.62}
+.masthead .tile.locked:hover{background:none;border-color:transparent;transform:none}
+.masthead .tile-ico{
+  flex:0 0 auto;
+  width:32px;height:32px;
+  display:grid;place-items:center;
+  border-radius:10px;
+  font-size:14px;
+  font-family:var(--font-display);
+}
+.masthead .ico-g{background:rgba(0,255,156,.12);color:var(--green);border:1px solid rgba(0,255,156,.3)}
+.masthead .ico-b{background:rgba(30,144,255,.12);color:var(--blue);border:1px solid rgba(30,144,255,.3)}
+
+.masthead .p-link{
+  display:block;
+  padding:10px 12px;
+  border-radius:12px;
+  font-size:.92rem;font-weight:600;
+  color:var(--txt);
+  transition:background var(--t-fast),color var(--t-fast);
+}
+.masthead .p-link span{display:block;font-size:.79rem;font-weight:400;color:var(--txt-faint)}
+.masthead .p-link:hover{background:var(--glass-2);color:#fff}
+
+.masthead .nav-act{display:flex;align-items:center;gap:6px}
+
+/* burger */
+.masthead .burger{
+  display:none;
+  width:42px;height:42px;
+  border-radius:50%;
+  border:1px solid var(--line);
+  background:var(--glass);
+  place-items:center;
+  gap:5px;
+  padding:11px;
+}
+.masthead .burger span{
+  display:block;width:100%;height:2px;
+  border-radius:2px;background:var(--txt);
+  transition:transform var(--t-fast),opacity var(--t-fast);
+}
+.masthead .burger.is-open span:first-child{transform:translateY(3.5px) rotate(45deg)}
+.masthead .burger.is-open span:last-child{transform:translateY(-3.5px) rotate(-45deg)}
+
+/* mobile sheet */
+.masthead .sheet{
+  pointer-events:auto;
+  position:absolute;
+  top:calc(100% + 4px);
+  left:50%;
+  translate:-50% 0;
+  width:min(var(--wrap),94vw);
+  max-height:72vh;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  padding:16px;
+  border-radius:var(--r-lg);
+  border:1px solid var(--line);
+  background:rgba(7,11,14,.96);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  box-shadow:0 40px 90px -40px #000;
+}
+.masthead .sheet[hidden]{display:none}
+.masthead .sheet .panel-tag{padding-top:8px}
+.masthead .sheet a{padding:11px 12px;border-radius:12px;font-size:.98rem;color:var(--txt-dim)}
+.masthead .sheet a:hover{background:var(--glass-2);color:#fff}
+.masthead .sheet .btn{margin-top:12px;color:#04140D}
+
+/* --------------------------------------------------- 5. Site footer --------- */
+.foot{
+  border-top:1px solid rgba(255,255,255,.07);
+  background:linear-gradient(180deg,transparent,rgba(0,255,156,.04));
+  padding:clamp(50px,7vw,80px) 0 34px;
+}
+.foot-top{
+  display:grid;
+  grid-template-columns:1.6fr repeat(4,1fr);
+  gap:clamp(22px,4vw,44px);
+  padding-bottom:40px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.foot-brand p{
+  margin-top:16px;
+  font-size:.92rem;color:var(--txt-faint);
+  max-width:34ch;
+}
+.foot .socials{display:flex;gap:10px;margin-top:20px}
+.foot .socials a{
+  width:38px;height:38px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  border:1px solid var(--line);
+  background:var(--glass);
+  font-size:.85rem;color:var(--txt-dim);
+  transition:border-color var(--t-fast),color var(--t-fast),box-shadow var(--t-fast),transform var(--t-fast);
+}
+.foot .socials a:hover{
+  color:var(--green);
+  border-color:rgba(0,255,156,.55);
+  box-shadow:0 0 22px -8px rgba(0,255,156,.8);
+  transform:translateY(-2px);
+}
+.foot-col{display:grid;gap:9px;align-content:start}
+.foot-col h4{
+  font-family:var(--font-display);
+  font-size:.76rem;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--txt-faint);
+  margin-bottom:6px;
+}
+.foot-col a{font-size:.92rem;color:var(--txt-dim);transition:color var(--t-fast),transform var(--t-fast)}
+.foot-col a:hover{color:var(--green)}
+.foot-base{
+  display:flex;flex-wrap:wrap;gap:8px 24px;
+  justify-content:space-between;
+  padding-top:26px;
+  font-size:.83rem;color:var(--txt-faint);
+}
+.foot-fine{max-width:60ch}
+
+
+/* ------------------------- 6. App pages embedding the footer ------------- */
+/* The editor and the cut room drop this same footer inside their own scroll
+   column, so it needs its own measure there (marketing pages use .wrap). */
+.app-foot{margin-top:40px}
+.app-foot > *{width:min(1180px,100%);margin-inline:auto;padding-inline:30px}
+
+/* ------------------------------- 5b. Footer responsive (shared) ---------- */
+@media (max-width:1080px){
+  .foot-top{grid-template-columns:1fr 1fr 1fr}
+  .foot-brand{grid-column:1 / -1}
+}
+@media (max-width:640px){
+  .foot-top{grid-template-columns:1fr 1fr}
+}

@@ -3,348 +3,231 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WayinVideo Pricing — Start with a Free Plan</title>
-<meta name="description" content="Explore WayinVideo subscription plans and the features included. Upgrade or get started with the free plan today.">
+<title>Framewright — plans and billing</title>
+<meta name="description" content="One free bench with the whole toolbox on it: the editor, the cut room, transcripts, captions and clean unbranded exports. See what the plan includes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2304070a'/><path d='M30 32l18 36 18-36' stroke='%232bf5a0' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Shared design system (tokens, navbar, footer), then this page's components. -->
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/framecraft.css">
+<link rel="stylesheet" href="assets/css/pricing.css">
+<link rel="stylesheet" href="assets/css/feedback.css">
+<!-- Original favicon: dark tile, emerald frame corners, electric-blue cut. -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%230B1116'/><path d='M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38' stroke='%2300FF9C' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/><path d='M22 42 42 22' stroke='%231E90FF' stroke-width='4' stroke-linecap='round'/></svg>">
+<script>document.documentElement.classList.add('js');</script>
 </head>
-<body class="pricing-page">
+<body>
 
-<!-- ===== Countdown promo bar ===== -->
-<div class="promo-bar promo-countdown" id="promoBar">
-  <div class="countdown" id="countdown" aria-live="off">
-    <span class="cd-unit"><b id="cdDays">72</b><i>Days</i></span>
-    <span class="cd-sep">:</span>
-    <span class="cd-unit"><b id="cdHours">00</b><i>Hrs</i></span>
-    <span class="cd-sep">:</span>
-    <span class="cd-unit"><b id="cdMins">00</b><i>Min</i></span>
-    <span class="cd-sep">:</span>
-    <span class="cd-unit"><b id="cdSecs">00</b><i>Sec</i></span>
-  </div>
-  <span class="cd-text">Get <strong>65% OFF</strong> and unlock premium access now!</span>
-  <button class="promo-close" id="promoClose" aria-label="Dismiss announcement">&times;</button>
+<!-- ============================== announcement strip ============================== -->
+<div class="notice" data-notice>
+  <span class="notice-dot" aria-hidden="true"></span>
+  <p><strong>Unlimited</strong> — every tool and every export runs unmetered while the studio is in open testing.</p>
+  <a href="#plans">See the plan</a>
+  <button type="button" class="notice-x" data-notice-x aria-label="Dismiss announcement">&times;</button>
 </div>
 
-<!-- ===== Header ===== -->
-<header class="site-header" id="siteHeader">
-  <div class="container nav-wrap">
-    <a class="brand" href="index.html">
-      <span class="brand-mark">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5l8 14 8-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </span>
-      Wayin<span class="brand-thin">Video</span>
+<!-- ============================== floating pill navbar ============================== -->
+<div class="masthead" data-masthead>
+  <nav class="pill" aria-label="Primary">
+    <a class="mark" href="index.html" aria-label="Framewright home">
+      <svg class="mark-glyph" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M22 42 42 22" stroke="var(--blue)" stroke-width="5" stroke-linecap="round"/>
+      </svg>
+      <span class="mark-word">Frame<span class="mark-tint">wright</span></span>
     </a>
 
-    <nav class="main-nav" id="mainNav" aria-label="Main">
-      <ul class="nav-list">
-        <li class="nav-item has-drop">
-          <button class="nav-link" aria-expanded="false">Products <span class="caret" aria-hidden="true"></span></button>
-          <div class="dropdown mega">
-            <div class="mega-grid">
-              <a class="mega-card" href="studio.html"><span class="mega-ico">⚡</span><span><strong>AI Video Generator</strong><small>Text &amp; image to video with native audio</small></span></a>
-              <a class="mega-card" href="studio.html#editor"><span class="mega-ico">✂️</span><span><strong>AI Video Editor</strong><small>Edit video like a text document</small></span></a>
-              <a class="mega-card" href="studio.html#clips"><span class="mega-ico">🎬</span><span><strong>Clip Maker</strong><small>Long video to viral shorts in 30s</small></span></a>
-              <a class="mega-card" href="studio.html#summarizer"><span class="mega-ico">📝</span><span><strong>Video Summarizer</strong><small>Timestamped summaries &amp; mind maps</small></span></a>
-              <a class="mega-card" href="studio.html#v2t"><span class="mega-ico">💬</span><span><strong>Video to Text</strong><small>Transcripts in 100+ languages</small></span></a>
-              <a class="mega-card" href="studio.html#notes"><span class="mega-ico">🧠</span><span><strong>AI Note Taker</strong><small>Structured notes from any recording</small></span></a>
-            </div>
+    <ul class="menu" id="primaryMenu">
+      <li class="m-item" data-drop>
+        <button type="button" class="m-link" data-drop-btn aria-expanded="false" aria-haspopup="true">
+          Product <svg class="caret" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <div class="m-panel mega">
+          <p class="panel-tag">Six tools, one workspace</p>
+          <div class="mega-grid">
+            <span class="tile locked" aria-disabled="true" title="In testing — not open yet">
+              <span class="tile-ico ico-g" aria-hidden="true">✦</span>
+              <span><strong>Prompt-to-Scene <em class="chip-beta">Beta</em></strong><small>Words and stills become moving footage</small></span>
+            </span>
+            <a class="tile" href="editor.html#start" target="_blank" rel="noopener">
+              <span class="tile-ico ico-b" aria-hidden="true">◧</span>
+              <span><strong>The Editor</strong><small>Trim by editing the transcript itself</small></span>
+            </a>
+            <a class="tile" href="clip-maker.html" target="_blank" rel="noopener">
+              <span class="tile-ico ico-g" aria-hidden="true">✂</span>
+              <span><strong>Cut Room</strong><small>Long takes sliced into scroll-stoppers</small></span>
+            </a>
+            <a class="tile" href="studio.html#summarizer">
+              <span class="tile-ico ico-b" aria-hidden="true">≡</span>
+              <span><strong>Chapter Break</strong><small>Timestamped beats and takeaways</small></span>
+            </a>
+            <a class="tile" href="studio.html#v2t">
+              <span class="tile-ico ico-g" aria-hidden="true">¶</span>
+              <span><strong>Spoken Type</strong><small>Transcripts with speaker turns, fast</small></span>
+            </a>
+            <a class="tile" href="studio.html#notes">
+              <span class="tile-ico ico-b" aria-hidden="true">✎</span>
+              <span><strong>Meeting Ledger</strong><small>Recordings filed into structured notes</small></span>
+            </a>
           </div>
-        </li>
-        <li class="nav-item has-drop">
-          <button class="nav-link" aria-expanded="false">Solutions <span class="caret" aria-hidden="true"></span></button>
-          <div class="dropdown">
-            <a class="drop-link" href="index.html#solutions">For Marketers <span>Turn webinars into channel-ready content</span></a>
-            <a class="drop-link" href="index.html#solutions">For Streamers <span>Highlights while you are still live</span></a>
-            <a class="drop-link" href="index.html#solutions">For Podcasters <span>Episodes into searchable shorts</span></a>
-            <a class="drop-link" href="index.html#solutions">For Gamers <span>Clutch plays &amp; reactions on autopilot</span></a>
-          </div>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="index.html#features">Features</a></li>
-        <li class="nav-item"><a class="nav-link" href="index.html#showcase">Showcase</a></li>
-        <li class="nav-item"><a class="nav-link active" href="pricing.html">Pricing</a></li>
-        <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
-      </ul>
+        </div>
+      </li>
 
-      <div class="nav-cta mobile-only">
-        <a class="btn btn-ghost" href="#">Sign in</a>
-        <a class="btn btn-primary" href="#">Start Creating Free</a>
-      </div>
-    </nav>
+      <li class="m-item" data-drop>
+        <button type="button" class="m-link" data-drop-btn aria-expanded="false" aria-haspopup="true">
+          Solutions <em class="chip-beta">Beta</em>
+          <svg class="caret" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <div class="m-panel">
+          <p class="panel-note">In the works — these playbooks are still being assembled.</p>
+          <a class="p-link" href="index.html#audiences">Campaign teams <span>One recording, a month of posts</span></a>
+          <a class="p-link" href="index.html#audiences">Streamers <span>Highlights while you're still live</span></a>
+          <a class="p-link" href="index.html#audiences">Show runners <span>Episodes that arrive pre-cut</span></a>
+          <a class="p-link" href="index.html#audiences">Players <span>Clutch plays out of hours of VOD</span></a>
+        </div>
+      </li>
 
-    <div class="nav-actions desktop-only">
-      <a class="btn btn-ghost" href="#">Sign in</a>
-      <a class="btn btn-primary" href="#">Start Creating Free</a>
+      <li class="m-item"><a class="m-link" href="index.html#workflow">Workflow</a></li>
+      <li class="m-item"><a class="m-link is-current" href="pricing.html" aria-current="page">Pricing</a></li>
+      <li class="m-item"><a class="m-link" href="#faq">Q&amp;A</a></li>
+    </ul>
+
+    <div class="nav-act">
+      <a class="btn ghost" href="#">Sign in</a>
+      <a class="btn glow" href="editor.html#start" target="_blank" rel="noopener">Open the studio</a>
     </div>
 
-    <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false">
-      <span></span><span></span><span></span>
+    <button type="button" class="burger" data-burger aria-expanded="false" aria-controls="mobileSheet" aria-label="Toggle menu">
+      <span></span><span></span>
     </button>
+  </nav>
+
+  <!-- mobile sheet -->
+  <div class="sheet" id="mobileSheet" data-sheet hidden>
+    <p class="panel-tag">Product</p>
+    <a href="editor.html#start" target="_blank" rel="noopener">The Editor</a>
+    <a href="clip-maker.html" target="_blank" rel="noopener">Cut Room</a>
+    <a href="studio.html#summarizer">Chapter Break</a>
+    <a href="studio.html#v2t">Spoken Type</a>
+    <a href="studio.html#notes">Meeting Ledger</a>
+    <p class="panel-tag">More</p>
+    <a href="index.html#workflow">Workflow</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="#faq">Q&amp;A</a>
+    <a class="btn glow" href="editor.html#start" target="_blank" rel="noopener">Open the studio</a>
   </div>
-</header>
+</div>
 
 <main>
 
-<!-- ===== Pricing hero ===== -->
-<section class="pricing-hero">
-  <div class="hero-glow glow-a"></div>
-  <div class="hero-glow glow-b"></div>
-  <div class="container">
-    <span class="eyebrow">PLANS AND BILLING</span>
-    <h1>WayinVideo <span class="grad-text">Plans and Pricing</span></h1>
-    <h2 class="pricing-sub">Unlock the FULL POWER of WayinVideo</h2>
-    <p class="pricing-lede">Flexible pricing plans for creators and teams at every stage</p>
+<!-- ============================== pricing hero ============================== -->
+<section class="hero pricing-hero">
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="wrap hero-copy">
+    <p class="kicker">Plans and billing</p>
+    <h1 class="h1">The whole bench,<br><span class="tint">nothing metered.</span></h1>
+    <p class="lede center">
+      One free seat with every tool on it — the editor, the cut room, transcripts,
+      captions and exports with no watermark stamped across the corner. Flip the
+      switch below to see how the two billing periods line up.
+    </p>
 
-    <div class="billing-toggle" id="billingToggle" role="group" aria-label="Billing period">
-      <button class="bt-opt active" data-cycle="monthly">Monthly</button>
-      <button class="bt-opt" data-cycle="annual">Annual <span class="save-badge">SAVE 65%</span></button>
+    <div class="cycle" id="billingToggle" role="group" aria-label="Billing period">
       <span class="bt-pill" aria-hidden="true"></span>
+      <button type="button" class="bt-opt active" data-cycle="monthly">Monthly</button>
+      <button type="button" class="bt-opt" data-cycle="annual">Annual <span class="save-badge">SAVE 65%</span></button>
     </div>
-    <p class="toggle-hint" id="toggleHint">Switch to annual and Pro drops to $9.58/mo, billed yearly.</p>
+    <p class="toggle-hint" id="toggleHint">Every tool is included on the Free plan — $0 forever, no card required.</p>
   </div>
 </section>
 
-<!-- ===== Plan cards ===== -->
-<section class="section plans">
-  <div class="container plan-grid">
+<!-- ============================== plan card ============================== -->
+<section class="band" id="plans">
+  <div class="wrap">
+    <div class="offer reveal" data-glow>
+      <div class="offer-copy">
+        <p class="kicker">The only seat in the house</p>
+        <h2 class="h2">Free, and it stays that way</h2>
+        <p>
+          No trial clock, no card at the door, no upsell wall halfway through your
+          first edit. Everything the workbench does today sits behind one $0 seat.
+        </p>
 
-    <!-- Free -->
-    <article class="plan-card reveal">
-      <header class="plan-head">
-        <h3>Free</h3>
-        <p class="plan-tag">Try every core tool</p>
-      </header>
-      <div class="plan-price">
-        <span class="amount">$0</span>
-        <span class="per">forever</span>
+        <ul class="ticks">
+          <li>720p export, standard processing queue</li>
+          <li>Link imports up to 500 MB, kept for 3 days</li>
+          <li>AI Notes, clipping and transcript editing</li>
+          <li>AI Reframe for inputs up to 10 minutes</li>
+          <li>AI titles, descriptions and hashtags</li>
+          <li>One connected social account</li>
+          <li>No watermark on anything you export</li>
+        </ul>
+
+        <div class="cta-row">
+          <a class="btn glow lg" href="#">Get started with Free</a>
+          <a class="btn line lg" href="#compare">Compare the fine print</a>
+        </div>
+        <small class="offer-note">100 one-time credits · they do not renew monthly.</small>
       </div>
-      <p class="plan-credits" data-monthly="100 one-time credits" data-annual="100 one-time credits">100 one-time credits · do not renew monthly</p>
-      <a class="btn btn-outline btn-block" href="#">Get Started With Free Plan</a>
-      <ul class="plan-features">
-        <li>720p export, standard processing</li>
-        <li>Link imports up to 500 MB (3-day retention)</li>
-        <li>Core AI Notes, clipping &amp; editing</li>
-        <li>AI Reframe for videos up to 10 minutes</li>
-        <li>AI titles, descriptions &amp; hashtags</li>
-        <li>1 social account</li>
-        <li>No watermark on exports</li>
-      </ul>
-    </article>
 
-    <!-- Pro -->
-    <article class="plan-card popular reveal">
-      <span class="popular-flag">MOST POPULAR</span>
-      <div class="discount-flag" data-monthly="" data-annual="65% OFF">65% OFF</div>
-      <header class="plan-head">
-        <h3>Pro</h3>
-        <p class="plan-tag">For serious creators</p>
-      </header>
-      <div class="plan-price">
-        <span class="amount" data-monthly="$26.99" data-annual="$9.58">$26.99</span>
-        <span class="per" data-monthly="/ month" data-annual="/ month, billed yearly">/ month</span>
+      <div class="offer-art" aria-hidden="true">
+        <div class="seat">
+          <span class="seat-name">Free bench</span>
+          <span class="seat-price">$0</span>
+          <p class="seat-per">forever</p>
+          <ul>
+            <li>100 one-time credits</li>
+            <li>Every core tool included</li>
+            <li>Cancel — there is nothing to cancel</li>
+          </ul>
+        </div>
       </div>
-      <p class="plan-billed" data-monthly="Billed monthly · $26.99 per cycle" data-annual="Billed yearly · $114.96 per year — save $203.92">Billed monthly · $26.99 per cycle</p>
-      <p class="plan-credits" data-monthly="1,000 credits per billing cycle" data-annual="12,000 credits granted upfront">1,000 credits per billing cycle</p>
-      <a class="btn btn-primary btn-block" href="#">Start with Pro</a>
-      <ul class="plan-features">
-        <li>Up to 2K Ultra HD export, fast priority</li>
-        <li>100 GB storage · files up to 30 GB</li>
-        <li>Bulk import up to 30 videos</li>
-        <li>Advanced AI video models</li>
-        <li>AI Reframe up to 120 min · AI Montage up to 10 h</li>
-        <li>10 social accounts · 50 scheduled posts/day</li>
-        <li>Brand Kit · 3 templates · 5 custom fonts</li>
-        <li>Bulk workflows up to 50 items</li>
-        <li>Priority support</li>
-      </ul>
-    </article>
-
-    <!-- Scale -->
-    <article class="plan-card reveal">
-      <div class="discount-flag" data-monthly="" data-annual="50% OFF">50% OFF</div>
-      <header class="plan-head">
-        <h3>Scale</h3>
-        <p class="plan-tag">For teams &amp; agencies</p>
-      </header>
-      <div class="plan-price">
-        <span class="amount" data-monthly="$139.99" data-annual="$69.99">$139.99</span>
-        <span class="per" data-monthly="/ month" data-annual="/ month, billed yearly">/ month</span>
-      </div>
-      <p class="plan-billed" data-monthly="Billed monthly · $139.99 per cycle" data-annual="Billed yearly · $839.88 per year — save $840.00">Billed monthly · $139.99 per cycle</p>
-      <p class="plan-credits" data-monthly="6,000 credits per billing cycle" data-annual="72,000 credits granted upfront">6,000 credits per billing cycle</p>
-      <a class="btn btn-outline btn-block" href="#">Start with Scale</a>
-      <ul class="plan-features">
-        <li>Up to 4K Cinematic export, highest priority</li>
-        <li>150 GB storage · bulk import up to 50 videos</li>
-        <li>Unlimited AI Reframe &amp; AI Montage input</li>
-        <li>Unlimited bulk editing &amp; export</li>
-        <li>50 social accounts · 300 scheduled posts/day</li>
-        <li>10 templates · unlimited custom fonts</li>
-        <li>VIP dedicated support &amp; early feature access</li>
-        <li>Flexible credit top-ups</li>
-      </ul>
-    </article>
-
-    <!-- Enterprise -->
-    <article class="plan-card reveal">
-      <header class="plan-head">
-        <h3>Enterprise</h3>
-        <p class="plan-tag">Custom everything</p>
-      </header>
-      <div class="plan-price">
-        <span class="amount">Custom</span>
-        <span class="per">pricing, credits &amp; seats</span>
-      </div>
-      <p class="plan-credits">Volume credits, dedicated workflows and contract terms</p>
-      <a class="btn btn-outline btn-block" href="#">Contact Sales</a>
-      <ul class="plan-features">
-        <li>Custom credit pools and seat counts</li>
-        <li>Custom workflows &amp; brand templates</li>
-        <li>Dedicated success manager</li>
-        <li>Security, compliance &amp; procurement review</li>
-        <li>SSO and invoiced billing</li>
-        <li>Onboarding &amp; training for your team</li>
-      </ul>
-    </article>
-  </div>
-
-  <p class="plan-footnote">All plans: no WayinVideo watermark · 100+ languages · cancel anytime. Credits reset each billing cycle and unused monthly credits don’t roll over.</p>
-</section>
-
-<!-- ===== Comparison table ===== -->
-<section class="section compare" id="compare">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">COMPARE</span>
-      <h2>Every plan, side by side</h2>
-      <p>Switch the billing period to see what each plan costs and includes.</p>
     </div>
 
-    <div class="table-scroll">
+    <p class="plan-foot">
+      All plans: no watermark · 100+ languages · cancel anytime. Credits reset each
+      billing cycle and unused monthly credits don’t roll over.
+    </p>
+  </div>
+</section>
+
+<!-- ============================== comparison table ============================== -->
+<section class="band alt" id="compare">
+  <div class="wrap">
+    <header class="head">
+      <p class="kicker">Compare</p>
+      <h2 class="h2">The fine print, <span class="tint">side by side</span></h2>
+      <p class="head-note">Switch the billing period above to watch the column update.</p>
+    </header>
+
+    <div class="table-shell reveal">
       <table class="compare-table" id="compareTable">
         <thead>
           <tr>
             <th scope="col" class="col-feature">Feature</th>
             <th scope="col">Free<span class="th-price" data-monthly="$0" data-annual="$0">$0</span></th>
-            <th scope="col" class="hl">Pro<span class="th-price" data-monthly="$26.99/mo" data-annual="$9.58/mo">$26.99/mo</span></th>
-            <th scope="col">Scale<span class="th-price" data-monthly="$139.99/mo" data-annual="$69.99/mo">$139.99/mo</span></th>
-            <th scope="col">Enterprise<span class="th-price" data-monthly="Custom" data-annual="Custom">Custom</span></th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">Credits</th>
-            <td>100 one-time</td>
-            <td class="hl" data-monthly="1,000 / cycle" data-annual="12,000 upfront">1,000 / cycle</td>
-            <td data-monthly="6,000 / cycle" data-annual="72,000 upfront">6,000 / cycle</td>
-            <td>Custom</td>
-          </tr>
-          <tr>
-            <th scope="row">Export resolution</th>
-            <td>720p</td>
-            <td class="hl">Up to 2K Ultra HD</td>
-            <td>Up to 4K Cinematic</td>
-            <td>Custom</td>
-          </tr>
-          <tr>
-            <th scope="row">Processing priority</th>
-            <td>Standard</td>
-            <td class="hl">Fast</td>
-            <td>Highest</td>
-            <td>Dedicated</td>
-          </tr>
-          <tr>
-            <th scope="row">Cloud storage</th>
-            <td>500 MB (3 days)</td>
-            <td class="hl">100 GB</td>
-            <td>150 GB</td>
-            <td>Custom</td>
-          </tr>
-          <tr>
-            <th scope="row">Max upload size</th>
-            <td>—</td>
-            <td class="hl">30 GB / file</td>
-            <td>30 GB / file</td>
-            <td>Custom</td>
-          </tr>
-          <tr>
-            <th scope="row">Bulk import per run</th>
-            <td>—</td>
-            <td class="hl">30 videos</td>
-            <td>50 videos</td>
-            <td>Unlimited</td>
-          </tr>
-          <tr>
-            <th scope="row">Social accounts</th>
-            <td>1</td>
-            <td class="hl">10</td>
-            <td>50</td>
-            <td>Custom</td>
-          </tr>
-          <tr>
-            <th scope="row">Scheduled posts / day</th>
-            <td>—</td>
-            <td class="hl">50</td>
-            <td>300</td>
-            <td>Custom</td>
-          </tr>
-          <tr>
-            <th scope="row">AI Reframe input</th>
-            <td>Up to 10 min</td>
-            <td class="hl">Up to 120 min</td>
-            <td>Unlimited</td>
-            <td>Unlimited</td>
-          </tr>
-          <tr>
-            <th scope="row">AI Montage input</th>
-            <td>—</td>
-            <td class="hl">Up to 10 h</td>
-            <td>Unlimited</td>
-            <td>Unlimited</td>
-          </tr>
-          <tr>
-            <th scope="row">Bulk workflows</th>
-            <td>—</td>
-            <td class="hl">50 items</td>
-            <td>Unlimited</td>
-            <td>Unlimited</td>
-          </tr>
-          <tr>
-            <th scope="row">Brand kit &amp; templates</th>
-            <td>—</td>
-            <td class="hl">Brand Kit · 3 templates · 5 fonts</td>
-            <td>10 templates · unlimited fonts</td>
-            <td>Custom</td>
-          </tr>
-          <tr>
-            <th scope="row">Speaker labels</th>
-            <td><span class="no">—</span></td>
-            <td class="hl"><span class="yes">✓</span></td>
-            <td><span class="yes">✓</span></td>
-            <td><span class="yes">✓</span></td>
-          </tr>
-          <tr>
-            <th scope="row">Watermark-free export</th>
-            <td><span class="yes">✓</span></td>
-            <td class="hl"><span class="yes">✓</span></td>
-            <td><span class="yes">✓</span></td>
-            <td><span class="yes">✓</span></td>
-          </tr>
-          <tr>
-            <th scope="row">Support</th>
-            <td>Help Center</td>
-            <td class="hl">Priority support</td>
-            <td>VIP + early access</td>
-            <td>Dedicated manager</td>
-          </tr>
+          <tr><th scope="row">Credits</th><td>100 one-time</td></tr>
+          <tr><th scope="row">Export resolution</th><td>720p</td></tr>
+          <tr><th scope="row">Processing priority</th><td>Standard</td></tr>
+          <tr><th scope="row">Cloud storage</th><td>500 MB (3 days)</td></tr>
+          <tr><th scope="row">Max upload size</th><td><s>—</s></td></tr>
+          <tr><th scope="row">Bulk import per run</th><td><s>—</s></td></tr>
+          <tr><th scope="row">Social accounts</th><td>1</td></tr>
+          <tr><th scope="row">Scheduled posts / day</th><td><s>—</s></td></tr>
+          <tr><th scope="row">AI Reframe input</th><td>Up to 10 min</td></tr>
+          <tr><th scope="row">AI Montage input</th><td><s>—</s></td></tr>
+          <tr><th scope="row">Bulk workflows</th><td><s>—</s></td></tr>
+          <tr><th scope="row">Brand kit &amp; templates</th><td><s>—</s></td></tr>
+          <tr><th scope="row">Speaker labels</th><td><s>—</s></td></tr>
+          <tr><th scope="row">Watermark-free export</th><td><span class="yes" aria-label="Included">✓</span></td></tr>
+          <tr><th scope="row">Support</th><td>Help Center</td></tr>
           <tr>
             <th scope="row"></th>
-            <td><a class="btn btn-ghost btn-sm" href="#">Start free</a></td>
-            <td class="hl"><a class="btn btn-primary btn-sm" href="#">Choose Pro</a></td>
-            <td><a class="btn btn-outline btn-sm" href="#">Choose Scale</a></td>
-            <td><a class="btn btn-outline btn-sm" href="#">Contact Sales</a></td>
+            <td><a class="btn line btn-sm" href="#">Start free</a></td>
           </tr>
         </tbody>
       </table>
@@ -352,166 +235,184 @@
   </div>
 </section>
 
-<!-- ===== Credit estimator ===== -->
-<section class="section estimator">
-  <div class="container est-box reveal">
-    <div class="est-copy">
-      <span class="eyebrow">PLAN ADVISOR</span>
-      <h2>How many credits do you need?</h2>
-      <p>Clipping and AI Notes cost about <strong>1 credit per minute</strong> of input video. Drag to see which plan fits your publishing schedule.</p>
-    </div>
+<!-- ============================== credit estimator ============================== -->
+<section class="band" id="estimator">
+  <div class="wrap">
+    <div class="est reveal" data-glow>
+      <div class="est-copy">
+        <p class="kicker">Plan advisor</p>
+        <h2 class="h2">How far does it stretch?</h2>
+        <p>
+          Clipping and AI Notes cost about <strong>1 credit per minute</strong> of
+          input video. Drag to see what your publishing schedule would need.
+        </p>
+      </div>
 
-    <div class="est-controls">
-      <label for="minutesRange">Minutes of video per month <b id="minutesOut">600</b></label>
-      <input type="range" id="minutesRange" min="50" max="8000" step="50" value="600">
-      <div class="est-result">
-        <div class="est-plan" id="estPlan">
-          <span class="est-label">Recommended plan</span>
-          <strong id="estName">Pro</strong>
-          <span id="estPrice">$26.99 / month</span>
+      <div class="est-controls">
+        <label class="est-label" for="minutesRange">Minutes of video per month <b id="minutesOut">600</b></label>
+        <input class="slider" type="range" id="minutesRange" min="50" max="8000" step="50" value="600">
+
+        <div class="est-out">
+          <div class="est-plan" id="estPlan">
+            <span class="est-tag">Recommended seat</span>
+            <strong id="estName">Free</strong>
+            <span id="estPrice">$0 forever</span>
+          </div>
+          <ul class="est-meta">
+            <li>Usage <b id="estUsage">600 credits</b></li>
+            <li>Headroom <b id="estLeft">0 credits left</b></li>
+            <li>Effective cost <b id="estCost">$0.00 / min</b></li>
+          </ul>
         </div>
-        <ul class="est-meta">
-          <li>Usage: <b id="estUsage">600 credits</b></li>
-          <li>Headroom: <b id="estLeft">400 credits left</b></li>
-          <li>Effective cost: <b id="estCost">$0.045 / min</b></li>
-        </ul>
-      </div>
-      <a class="btn btn-primary" id="estCta" href="#">Start with Pro</a>
-    </div>
-  </div>
-</section>
 
-<!-- ===== Pricing FAQ ===== -->
-<section class="section faq" id="faq">
-  <div class="container faq-wrap">
-    <div class="section-head left">
-      <span class="eyebrow">FAQ</span>
-      <h2>Frequently asked questions</h2>
-      <p>Plans, billing, credits and cancellations — answered.</p>
-      <a class="btn btn-outline" href="index.html#faq">Product FAQ</a>
-    </div>
-
-    <div class="accordion" data-accordion>
-      <div class="acc-item">
-        <button class="acc-q" aria-expanded="false">Can I try WayinVideo for free?<span class="acc-ico"></span></button>
-        <div class="acc-a"><p>Yes, you can. Sign up and you’ll instantly receive 100 free credits to start creating with WayinVideo. No credit card required.</p></div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-q" aria-expanded="false">Can I download invoices and receipts?<span class="acc-ico"></span></button>
-        <div class="acc-a"><p>Yes. You can download invoices and receipts as PDFs in the web app under Settings &gt; Plan &gt; Invoice.</p></div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-q" aria-expanded="false">Do subscriptions renew automatically?<span class="acc-ico"></span></button>
-        <div class="acc-a"><p>Yes. Monthly and yearly subscriptions renew automatically on your billing date unless you cancel before the renewal date.</p></div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-q" aria-expanded="false">Which payment methods do you support?<span class="acc-ico"></span></button>
-        <div class="acc-a"><p>We support a wide range of major payment methods, including credit cards, debit cards, Apple Pay, Google Pay, Link, and more.</p></div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-q" aria-expanded="false">How do I cancel my subscription?<span class="acc-ico"></span></button>
-        <div class="acc-a"><p>Go to Settings &gt; Profile &gt; Current Plan and click “Change”. Your subscription benefits remain active until the end of your current billing cycle, after which your membership automatically expires. Please note that payments are nonrefundable.</p></div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-q" aria-expanded="false">What happens to unused monthly credits?<span class="acc-ico"></span></button>
-        <div class="acc-a"><p>With a monthly plan, your credits reset at the end of each billing cycle. Unused credits don’t roll over.</p></div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-q" aria-expanded="false">How do annual credits work?<span class="acc-ico"></span></button>
-        <div class="acc-a"><p>With an annual plan you receive all your credits upfront when your subscription starts. At the beginning of each new annual billing cycle your balance resets to your plan’s annual credit allowance. Any unused credits from the previous year expire and don’t roll over.</p></div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-q" aria-expanded="false">Where can I learn how credits work?<span class="acc-ico"></span></button>
-        <div class="acc-a"><p>You can visit the Help Center to learn how credits work and how WayinVideo plans work. Clipping and AI Notes generally cost 1 credit per input video minute; Find Moments after a clipping task costs 0.5 credits per minute.</p></div>
-      </div>
-      <div class="acc-item">
-        <button class="acc-q" aria-expanded="false">Is there a community I can join?<span class="acc-ico"></span></button>
-        <div class="acc-a"><p>Join our Discord community to share your thoughts anytime — feature requests, workflows and clip showcases all welcome.</p></div>
+        <a class="btn glow" id="estCta" href="#">Get started with Free</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== Final CTA ===== -->
-<section class="section final-cta">
-  <div class="container cta-box reveal">
-    <div class="cta-glow"></div>
-    <h2>Get started with the Free plan</h2>
-    <p>Try WayinVideo free — 100 welcome credits, full access to the core AI video workspace.</p>
-    <div class="hero-actions center">
-      <a class="btn btn-primary btn-lg" href="#">Try for Free</a>
-      <a class="btn btn-outline btn-lg" href="#">Contact Sales</a>
+<!-- ============================== FAQ ============================== -->
+<section class="band alt" id="faq">
+  <div class="wrap faq-grid">
+    <header class="head left">
+      <p class="kicker">FAQ</p>
+      <h2 class="h2">Plans, credits<br><span class="tint">and cancellations</span></h2>
+      <p class="head-note">The billing questions, answered without the legalese.</p>
+      <a class="btn line" href="index.html#faq">Product Q&amp;A</a>
+    </header>
+
+    <div class="qa-list">
+      <details class="qa" open>
+        <summary>Can I try Framewright for free?<span class="qa-x" aria-hidden="true"></span></summary>
+        <p>Yes. Sign up and 100 credits land in your account straight away — no card, no trial clock.</p>
+      </details>
+      <details class="qa">
+        <summary>Can I download invoices and receipts?<span class="qa-x" aria-hidden="true"></span></summary>
+        <p>Yes. Invoices and receipts download as PDFs from Settings &gt; Plan &gt; Invoice inside the web app.</p>
+      </details>
+      <details class="qa">
+        <summary>Do subscriptions renew automatically?<span class="qa-x" aria-hidden="true"></span></summary>
+        <p>Yes. Monthly and yearly subscriptions renew on the billing date unless you cancel before it.</p>
+      </details>
+      <details class="qa">
+        <summary>Which payment methods do you support?<span class="qa-x" aria-hidden="true"></span></summary>
+        <p>Major credit and debit cards, Apple Pay, Google Pay, Link and a few more at checkout.</p>
+      </details>
+      <details class="qa">
+        <summary>How do I cancel my subscription?<span class="qa-x" aria-hidden="true"></span></summary>
+        <p>Settings &gt; Profile &gt; Current Plan, then “Change”. Benefits run to the end of the billing cycle and expire on their own after that. Payments are nonrefundable.</p>
+      </details>
+      <details class="qa">
+        <summary>What happens to unused monthly credits?<span class="qa-x" aria-hidden="true"></span></summary>
+        <p>Monthly credits reset at the end of each billing cycle. Unused ones don’t roll over.</p>
+      </details>
+      <details class="qa">
+        <summary>How do annual credits work?<span class="qa-x" aria-hidden="true"></span></summary>
+        <p>On an annual plan the full allowance arrives upfront. Each new annual cycle resets the balance to that year’s allowance; leftovers from the previous year expire.</p>
+      </details>
+      <details class="qa">
+        <summary>Where can I learn how credits work?<span class="qa-x" aria-hidden="true"></span></summary>
+        <p>The Help Center covers it. Clipping and AI Notes generally cost 1 credit per input minute; Find Moments after a clipping job costs 0.5 credits per minute.</p>
+      </details>
+      <details class="qa">
+        <summary>Is there a community I can join?<span class="qa-x" aria-hidden="true"></span></summary>
+        <p>Yes — our Discord is open for feature requests, workflows and clip showcases alike.</p>
+      </details>
     </div>
-    <small class="cta-note">No credit card required</small>
+  </div>
+</section>
+
+<!-- ============================== closer ============================== -->
+<section class="band">
+  <div class="wrap">
+    <div class="closer reveal" data-glow>
+      <div class="closer-orb" aria-hidden="true"></div>
+      <p class="kicker">Open door</p>
+      <h2 class="h2 big">Take the seat,<br><span class="tint">keep the weekend.</span></h2>
+      <p class="lede center">100 welcome credits, the full toolbox, and nothing stamped across your export.</p>
+      <div class="cta-row center">
+        <a class="btn glow lg" href="#">Try it for free</a>
+        <a class="btn line lg" href="#">Contact us</a>
+      </div>
+      <small class="cta-note">No credit card required</small>
+    </div>
   </div>
 </section>
 
 </main>
 
-<!-- ===== Footer ===== -->
-<footer class="site-footer">
-  <div class="container footer-grid">
-    <div class="footer-brand">
-      <a class="brand" href="index.html">
-        <span class="brand-mark">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5l8 14 8-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-        Wayin<span class="brand-thin">Video</span>
-      </a>
-      <p>The video-native AI platform for creators and teams. Discover, create, share.</p>
-      <div class="socials">
-        <a href="#" aria-label="X">𝕏</a>
-        <a href="#" aria-label="YouTube">▶</a>
-        <a href="#" aria-label="Discord">◉</a>
-        <a href="#" aria-label="LinkedIn">in</a>
+<!-- ============================== footer ============================== -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="mark" href="index.html">
+          <svg class="mark-glyph" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 42 42 22" stroke="var(--blue)" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+          <span class="mark-word">Frame<span class="mark-tint">wright</span></span>
+        </a>
+        <p>The workbench for people who'd rather tell the story than babysit the timeline.</p>
+        <div class="socials">
+          <a href="#" aria-label="Community">◎</a>
+          <a href="#" aria-label="Video channel">▷</a>
+          <a href="#" aria-label="Developer updates">⟨/⟩</a>
+        </div>
       </div>
+
+      <nav class="foot-col" aria-label="Product">
+        <h4>Bench</h4>
+        <a href="editor.html#start">The Editor</a>
+        <a href="clip-maker.html">Cut Room</a>
+        <a href="studio.html#summarizer">Chapter Break</a>
+        <a href="studio.html#v2t">Spoken Type</a>
+        <a href="studio.html#notes">Meeting Ledger</a>
+      </nav>
+
+      <nav class="foot-col" aria-label="Audiences">
+        <h4>Desks</h4>
+        <a href="index.html#audiences">Campaign teams</a>
+        <a href="index.html#audiences">Streamers</a>
+        <a href="index.html#audiences">Show runners</a>
+        <a href="index.html#audiences">Players</a>
+      </nav>
+
+      <nav class="foot-col" aria-label="Company">
+        <h4>Shop</h4>
+        <a href="pricing.html">Pricing</a>
+        <a href="#faq">Q&amp;A</a>
+        <a href="#">Changelog</a>
+        <a href="#">Say hello</a>
+      </nav>
+
+      <nav class="foot-col" aria-label="Legal">
+        <h4>Small print</h4>
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="#">Cookies</a>
+        <a href="#">Security</a>
+      </nav>
     </div>
 
-    <div class="footer-col">
-      <h4>Product</h4>
-      <a href="studio.html">AI Video Generator</a>
-      <a href="studio.html#editor">AI Video Editor</a>
-      <a href="studio.html#clips">Clip Maker</a>
-      <a href="studio.html#summarizer">Video Summarizer</a>
-      <a href="studio.html#v2t">Video to Text</a>
-      <a href="studio.html#notes">AI Note Taker</a>
+    <div class="foot-base">
+      <p>© <span data-year>2026</span> Framewright. Cut with care.</p>
+      <p class="foot-fine">Every graphic on this page is drawn in CSS and SVG — no photography, no stock, no third-party artwork.</p>
     </div>
-
-    <div class="footer-col">
-      <h4>Solutions</h4>
-      <a href="index.html#solutions">Marketers</a>
-      <a href="index.html#solutions">Streamers</a>
-      <a href="index.html#solutions">Podcasters</a>
-      <a href="index.html#solutions">Gamers</a>
-      <a href="index.html#showcase">Showcase</a>
-    </div>
-
-    <div class="footer-col">
-      <h4>Company</h4>
-      <a href="pricing.html">Pricing</a>
-      <a href="index.html#faq">FAQ</a>
-      <a href="#">Help Center</a>
-      <a href="#">Contact Us</a>
-      <a href="#">Careers</a>
-    </div>
-
-    <div class="footer-col">
-      <h4>Legal</h4>
-      <a href="#">Terms of Service</a>
-      <a href="#">Privacy Policy</a>
-      <a href="#">Cookie Policy</a>
-      <a href="#">Security</a>
-    </div>
-  </div>
-
-  <div class="container footer-bottom">
-    <p>© <span id="year">2026</span> WayinVideo. All rights reserved.</p>
-    <p class="foot-note">Built as a design study — UI inspired by WayinVideo, restyled in green, blue &amp; black.</p>
   </div>
 </footer>
 
-<button class="to-top" id="toTop" aria-label="Back to top">↑</button>
+<!-- ============================== sticky dock + top ============================== -->
+<div class="dock" data-dock aria-hidden="true">
+  <p><strong>Ready when the footage is.</strong> <span>Free bench · no card</span></p>
+  <a class="btn glow" href="editor.html#start" target="_blank" rel="noopener">Open the studio</a>
+  <button type="button" class="dock-x" data-dock-x aria-label="Hide bar">&times;</button>
+</div>
 
-<script src="assets/js/main.js"></script>
+<button type="button" class="totop" data-totop aria-label="Back to top">↑</button>
+
+<script src="assets/js/framecraft.js"></script>
+<script src="assets/js/pricing.js"></script>
+<script src="assets/js/feedback.js"></script>
 </body>
 </html>

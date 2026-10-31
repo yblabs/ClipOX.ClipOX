@@ -4,3 +4,9 @@ backend/work/
 *.mp4
 __pycache__/
 .DS_Store
+
+# Admin server — secrets, dependencies and feedback data are never committed
+.env
+server/.env
+server/node_modules/
+server/data/

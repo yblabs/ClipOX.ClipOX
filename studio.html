@@ -3,14 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Studio — WayinVideo | Clip Maker, AI Editor, Summarizer</title>
-<meta name="description" content="WayinVideo Studio: turn long videos into vertical clips, edit by transcript, summarize, extract text and take notes.">
+<title>Studio — Framewright | Summarizer, Video to Text, Note Taker</title>
+<meta name="description" content="Framewright Studio: summarize videos, extract text and take notes — all running on this machine.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Shared design system (tokens, navbar, footer) — loaded before the page styles. -->
+<link rel="stylesheet" href="assets/css/theme.css">
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="stylesheet" href="assets/css/studio.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2304070a'/><path d='M30 32l18 36 18-36' stroke='%232bf5a0' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="stylesheet" href="assets/css/feedback.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%230B1116'/><path d='M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38' stroke='%2300FF9C' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/><path d='M22 42 42 22' stroke='%231E90FF' stroke-width='4' stroke-linecap='round'/></svg>">
 </head>
 <body>
 
@@ -29,7 +32,7 @@
       <span class="brand-mark">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5l8 14 8-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </span>
-      Wayin<span class="brand-thin">Video</span>
+      Frame<span class="brand-thin">wright</span>
     </a>
 
     <nav class="main-nav" id="mainNav" aria-label="Main">
@@ -38,11 +41,11 @@
           <button class="nav-link" aria-expanded="false">Products <span class="caret" aria-hidden="true"></span></button>
           <div class="dropdown mega">
             <div class="mega-grid">
-              <a class="mega-card" href="studio.html#clips">
+              <a class="mega-card" href="clip-maker.html" target="_blank" rel="noopener">
                 <span class="mega-ico">🎬</span>
                 <span><strong>Clip Maker</strong><small>Long video → 10 viral shorts in minutes</small></span>
               </a>
-              <a class="mega-card" href="studio.html#editor">
+              <a class="mega-card" href="editor.html#start" target="_blank" rel="noopener">
                 <span class="mega-ico">✂️</span>
                 <span><strong>AI Video Editor</strong><small>Edit video like a text document</small></span>
               </a>
@@ -99,9 +102,9 @@
 <main class="studio-main container">
 
   <div class="studio-head">
-    <span class="eyebrow">WayinVideo Studio</span>
-    <h1>One page. <span class="grad-text">Five production tools.</span></h1>
-    <p>Paste a link or drop a file — everything below runs on this machine: Whisper transcription, scene-aware hook scoring, FFmpeg rendering and LLM-written metadata.</p>
+    <span class="eyebrow">Framewright Studio</span>
+    <h1>One page. <span class="grad-text">Three production tools.</span></h1>
+    <p>Paste a link or drop a file — everything below runs on this machine: Whisper transcription, FFmpeg rendering and LLM-written metadata.</p>
     <div class="studio-status" id="apiStatus" title="Backend capability report">
       <span class="dot-live" id="apiDot"></span>
       <span id="apiText">Checking engine…</span>
@@ -109,242 +112,10 @@
   </div>
 
   <div class="studio-tabs" id="studioTabs" role="tablist">
-    <button class="stab active" data-tool="clips" role="tab">🎬 Clip Maker</button>
-    <button class="stab" data-tool="editor" role="tab">✂️ AI Video Editor</button>
-    <button class="stab" data-tool="summarizer" role="tab">📝 Summarizer</button>
+    <button class="stab active" data-tool="summarizer" role="tab">📝 Summarizer</button>
     <button class="stab" data-tool="v2t" role="tab">💬 Video to Text</button>
     <button class="stab" data-tool="notes" role="tab">🧠 Note Taker</button>
   </div>
-
-  <!-- ============================================================ CLIP MAKER -->
-  <section class="tool-panel active" id="tool-clips" role="tabpanel">
-    <div class="panel-grid">
-      <div class="panel-card">
-        <h2>Clip Maker</h2>
-        <p class="muted">10 high-engagement vertical clips (9:16) with smart crop, karaoke subtitles and platform-ready metadata.</p>
-
-        <div class="seg" id="clipInputMode" role="tablist">
-          <button class="seg-btn active" data-mode="url">Paste URL</button>
-          <button class="seg-btn" data-mode="upload">Upload file</button>
-        </div>
-
-        <div class="seg-pane active" data-pane="url">
-          <label class="field-label" for="clipUrl">Video URL</label>
-          <input class="input" id="clipUrl" type="text" placeholder="https://www.youtube.com/watch?v=… or /path/to/video.mp4" spellcheck="false">
-          <p class="hint">YouTube, Vimeo, X, Twitch VODs — anything <code>yt-dlp</code> supports — or a local file path.</p>
-        </div>
-
-        <div class="seg-pane" data-pane="upload">
-          <div class="dropzone" id="clipDrop" tabindex="0">
-            <input type="file" id="clipFile" accept=".mp4,.mov,.mkv,.webm,video/*" hidden>
-            <div class="dz-inner">
-              <span class="dz-ico">⬆️</span>
-              <strong id="clipDropLabel">Drop a long-form video here</strong>
-              <span class="muted">.mp4 · .mov · .mkv — or click to browse</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- ===== Clip type: Normal vs Hook ===== -->
-        <div class="style-row clip-kind-row">
-          <span class="field-label">Clip type</span>
-          <div class="seg" id="clipKindMode" role="tablist" aria-label="Clip type">
-            <button class="seg-btn active" data-kind="normal">Normal clips</button>
-            <button class="seg-btn" data-kind="hook">Hook clips</button>
-          </div>
-          <p class="hint" id="clipKindHint">Standard cut — scored clips with titles, tags and a description per platform.</p>
-        </div>
-
-        <!-- ===== Expandable subtitle style drawer ===== -->
-        <div class="drawer">
-          <button class="drawer-head" id="styleToggle" aria-expanded="false" aria-controls="styleDrawer">
-            <span class="drawer-title">Subtitle style</span>
-            <span class="drawer-summary" id="styleSummary">Stationary · Classic · Montserrat · Medium · Bottom</span>
-            <span class="drawer-arrow" aria-hidden="true"></span>
-          </button>
-          <div class="drawer-body" id="styleDrawer" hidden>
-            <div class="style-row">
-              <span class="field-label">Motion</span>
-              <div class="chip-row" data-style="motion">
-                <button class="chip-btn active" data-value="stationary">Stationary</button>
-                <button class="chip-btn" data-value="moving">Moving (word bounce)</button>
-              </div>
-            </div>
-
-            <div class="style-row">
-              <span class="field-label">Colour palette</span>
-              <div class="swatch-row" data-style="palette">
-                <button class="swatch active" data-value="classic" style="--a:#ffe14d;--b:#ffffff"><span>Classic</span></button>
-                <button class="swatch" data-value="white" style="--a:#ffffff;--b:#ffffff"><span>White</span></button>
-                <button class="swatch" data-value="neon" style="--a:#00fff7;--b:#f2ffff"><span>Neon Cyan</span></button>
-                <button class="swatch" data-value="contrast" style="--a:#ffe14d;--b:#ffffff"><span>Contrast</span></button>
-                <button class="swatch" data-value="brand" style="--a:#2bf5a0;--b:#ffffff"><span>Brand</span></button>
-                <button class="swatch" data-value="ocean" style="--a:#38bdf8;--b:#eaf6ff"><span>Ocean</span></button>
-              </div>
-            </div>
-
-            <div class="style-row">
-              <label class="field-label" for="styleFont">Font</label>
-              <select class="input" id="styleFont">
-                <option>Montserrat</option><option>Impact</option>
-                <option>Anton</option><option>Poppins</option>
-              </select>
-            </div>
-
-            <div class="style-row">
-              <span class="field-label">Text size</span>
-              <div class="chip-row" data-style="size">
-                <button class="chip-btn" data-value="small">Small</button>
-                <button class="chip-btn active" data-value="medium">Medium</button>
-                <button class="chip-btn" data-value="large">Large</button>
-              </div>
-            </div>
-
-            <div class="style-row">
-              <span class="field-label">Placement</span>
-              <div class="chip-row" data-style="placement">
-                <button class="chip-btn" data-value="top">Top</button>
-                <button class="chip-btn" data-value="center">Center</button>
-                <button class="chip-btn active" data-value="bottom">Bottom</button>
-              </div>
-            </div>
-
-            <div class="sub-preview" id="subPreview">
-              <div class="sub-frame">
-                <span class="sub-text" id="subText">This is how your captions will look</span>
-              </div>
-              <p class="hint">Live preview of the burned-in style.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="style-row">
-          <label class="field-label" for="clipCount">Number of clips <b id="clipCountVal">10</b></label>
-          <input type="range" id="clipCount" min="1" max="10" value="10">
-        </div>
-
-        <button class="btn btn-primary btn-block" id="clipGenerate">Generate 10 clips</button>
-        <div class="err" id="clipError" hidden></div>
-      </div>
-
-      <!-- progress + gallery -->
-      <div class="panel-card panel-results">
-        <div class="progress-block" id="clipProgress" hidden>
-          <div class="prog-top">
-            <strong id="clipStage">Queued</strong>
-            <span id="clipPct">0%</span>
-          </div>
-          <div class="prog-bar"><i id="clipBar"></i></div>
-          <ol class="steps" id="clipSteps"></ol>
-        </div>
-
-        <div class="empty-state" id="clipEmpty">
-          <span>🎬</span>
-          <p>Your 10 clips will appear here with titles, tags and descriptions for YouTube Shorts, Reels and TikTok.</p>
-        </div>
-
-        <div class="clip-grid" id="clipGrid" hidden></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================== AI EDITOR -->
-  <section class="tool-panel" id="tool-editor" role="tabpanel">
-    <div class="panel-grid">
-      <div class="panel-card">
-        <h2>AI Video Editor</h2>
-        <p class="muted" id="editorTargetLabel">Load a video, delete words from the transcript, and the matching footage is cut out — then re-burn captions in one pass.</p>
-
-        <label class="field-label" for="editSource">Source (URL, /media/… clip path or local file)</label>
-        <input class="input" id="editSource" placeholder="/media/<task>/clip_01.mp4 or https://…" spellcheck="false">
-        <div class="btn-row">
-          <button class="btn btn-outline btn-sm" id="editLoad">Load transcript</button>
-          <button class="btn btn-ghost btn-sm" id="editSilence">Detect silence</button>
-        </div>
-        <div class="err" id="editError" hidden></div>
-
-        <div class="drawer open">
-          <button class="drawer-head" id="editStyleToggle" aria-expanded="true" aria-controls="editStyleDrawer">
-            <span class="drawer-title">Caption style</span>
-            <span class="drawer-summary" id="editStyleSummary">Stationary · Classic · Montserrat · Medium · Bottom</span>
-            <span class="drawer-arrow" aria-hidden="true"></span>
-          </button>
-          <div class="drawer-body" id="editStyleDrawer">
-            <div class="style-row">
-              <span class="field-label">Motion</span>
-              <div class="chip-row" data-estyle="motion">
-                <button class="chip-btn active" data-value="stationary">Stationary</button>
-                <button class="chip-btn" data-value="moving">Moving</button>
-              </div>
-            </div>
-            <div class="style-row">
-              <span class="field-label">Palette</span>
-              <div class="chip-row" data-estyle="palette">
-                <button class="chip-btn active" data-value="classic">Classic</button>
-                <button class="chip-btn" data-value="white">White</button>
-                <button class="chip-btn" data-value="neon">Neon</button>
-                <button class="chip-btn" data-value="contrast">Contrast</button>
-                <button class="chip-btn" data-value="brand">Brand</button>
-                <button class="chip-btn" data-value="ocean">Ocean</button>
-              </div>
-            </div>
-            <div class="style-row">
-              <label class="field-label" for="editFont">Font</label>
-              <select class="input" id="editFont">
-                <option>Montserrat</option><option>Impact</option><option>Anton</option><option>Poppins</option>
-              </select>
-            </div>
-            <div class="style-row">
-              <span class="field-label">Size</span>
-              <div class="chip-row" data-estyle="size">
-                <button class="chip-btn" data-value="small">Small</button>
-                <button class="chip-btn active" data-value="medium">Medium</button>
-                <button class="chip-btn" data-value="large">Large</button>
-              </div>
-            </div>
-            <div class="style-row">
-              <span class="field-label">Placement</span>
-              <div class="chip-row" data-estyle="placement">
-                <button class="chip-btn" data-value="top">Top</button>
-                <button class="chip-btn" data-value="center">Center</button>
-                <button class="chip-btn active" data-value="bottom">Bottom</button>
-              </div>
-            </div>
-            <div class="style-row inline">
-              <label class="check"><input type="checkbox" id="editRemoveSilence"> Remove silence (> 1.0s below −30 dB)</label>
-              <label class="check"><input type="checkbox" id="editBurn" checked> Re-burn captions</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn btn-primary" id="editRender">Render final video</button>
-          <button class="btn btn-ghost" id="editReset">Reset transcript</button>
-        </div>
-        <div class="silence-info" id="silenceInfo" hidden></div>
-      </div>
-
-      <div class="panel-card panel-results">
-        <div class="result-toolbar" id="editToolbar" hidden>
-          <span class="chip chip-green" id="editKeptCount">0 words kept</span>
-          <span class="chip chip-blue" id="editRemovedCount">0 removed</span>
-          <span class="muted" id="editDuration"></span>
-        </div>
-        <div class="empty-state" id="editEmpty">
-          <span>✂️</span>
-          <p>Load a clip to edit its transcript. Deleting a line deletes that footage — fixing a typo fixes the caption.</p>
-        </div>
-        <div class="transcript" id="editTranscript" hidden></div>
-        <div class="render-result" id="editResult" hidden>
-          <video id="editVideo" controls playsinline></video>
-          <div class="btn-row">
-            <a class="btn btn-primary btn-sm" id="editDownload" download>Download</a>
-            <button class="btn btn-ghost btn-sm" id="editCopyPath">Copy media path</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ========================================================= SUMMARIZER -->
   <section class="tool-panel" id="tool-summarizer" role="tabpanel">
@@ -539,9 +310,9 @@
         <span class="brand-mark">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5l8 14 8-14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
-        Wayin<span class="brand-thin">Video</span>
+        Frame<span class="brand-thin">wright</span>
       </a>
-      <p>The video-native AI platform for creators and teams. This studio runs entirely on your machine.</p>
+      <p>The video workbench for creators and teams. This studio runs entirely on your machine.</p>
       <div class="socials">
         <a href="#" aria-label="X">𝕏</a>
         <a href="#" aria-label="YouTube">▶</a>
@@ -552,8 +323,6 @@
 
     <div class="footer-col">
       <h4>Studio</h4>
-      <a href="studio.html#clips">Clip Maker</a>
-      <a href="studio.html#editor">AI Video Editor</a>
       <a href="studio.html#summarizer">Video Summarizer</a>
       <a href="studio.html#v2t">Video to Text</a>
       <a href="studio.html#notes">AI Note Taker</a>
@@ -576,12 +345,13 @@
   </div>
 
   <div class="container footer-bottom">
-    <p>© <span id="year">2026</span> WayinVideo. All rights reserved.</p>
+    <p>© <span id="year">2026</span> Framewright. All rights reserved.</p>
     <p class="foot-note">FFmpeg · faster-whisper · yt-dlp · PySceneDetect — running locally.</p>
   </div>
 </footer>
 
 <script src="assets/js/main.js"></script>
 <script src="assets/js/studio.js"></script>
+<script src="assets/js/feedback.js"></script>
 </body>
 </html>

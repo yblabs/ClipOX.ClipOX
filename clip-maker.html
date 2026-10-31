@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clip Maker — AI Clipping | Framewright</title>
+<meta name="description" content="Paste a link or upload a video and the AI finds the most engaging moments, ranked and ready to post as short clips.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Shared design system (tokens, navbar, footer) — loaded before the page styles. -->
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/clipmaker.css">
+<link rel="stylesheet" href="assets/css/sidebar.css">
+<link rel="stylesheet" href="assets/css/feedback.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%230B1116'/><path d='M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38' stroke='%2300FF9C' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/><path d='M22 42 42 22' stroke='%231E90FF' stroke-width='4' stroke-linecap='round'/></svg>">
+</head>
+<body>
+
+<!-- ============================== top bar ============================== -->
+<header class="cm-topbar">
+  <a class="cm-back" href="studio.html" title="Back to Studio" aria-label="Back to Studio">←</a>
+  <a class="cm-brand" href="index.html">
+    <span class="mark"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 42 42 22" stroke="var(--blue)" stroke-width="5" stroke-linecap="round"/></svg></span> Frame<span style="color:var(--mut)">wright</span>
+    <small>Clip Maker</small>
+  </a>
+
+  <div class="cm-top-links">
+    <a href="studio.html">Skills</a>
+    <button id="toolsBtn" aria-haspopup="true">Tools ▾</button>
+    <a href="index.html#faq">Community</a>
+  </div>
+
+  <div class="cm-top-right">
+    <select class="cm-lang" id="uiLang" aria-label="Interface language">
+      <option value="en">EN</option><option value="hi">हिं</option><option value="es">ES</option>
+      <option value="fr">FR</option><option value="de">DE</option><option value="pt">PT</option>
+      <option value="ja">日本語</option><option value="ko">한국어</option>
+    </select>
+    <div class="credit-pill" id="creditsPill" title="Credit balance">
+      <span>⚡</span><span id="creditCount">—</span>
+    </div>
+    <a class="btn btn-ghost btn-sm" id="upgradeBtn" href="editor.html#pricing">Upgrade</a>
+    <button class="icon-btn" id="bellBtn" aria-label="Notifications">🔔<span class="dot hidden" id="bellDot"></span></button>
+    <button class="avatar" id="avatarBtn" aria-label="Account">BV</button>
+  </div>
+</header>
+
+<div class="cm-shell">
+  <!-- ============================ sidebar ============================ -->
+  <aside class="cm-side">
+    <!-- shared app sidebar (menu defined once in assets/js/sidebar.js) -->
+    <div data-sidebar data-nav="page" data-active="clipmaker"
+         data-overrides='{"library":"#library","scheduler":"#scheduler","clipmaker":"#input"}'></div>
+    <div class="side-foot">AI clipping runs on this machine:<br>Whisper transcription, signal scoring, FFmpeg renders.</div>
+  </aside>
+
+  <main class="cm-main">
+
+    <!-- ========================== input view ========================== -->
+    <section class="cm-view active" id="view-input">
+      <div class="cm-head">
+        <span class="eyebrow">Clip Maker</span>
+        <h1>AI <span class="tint">Clipping</span></h1>
+        <p>Turn any video into viral clips for TikTok, Shorts, and Reels instantly.</p>
+      </div>
+
+      <div class="cm-grid">
+        <div class="cm-card">
+          <h2>Add a video</h2>
+          <p class="sub">Paste a link from any major platform, or upload a file from this computer.</p>
+
+          <div class="seg full" id="srcMode" role="tablist">
+            <button class="active" data-mode="url" role="tab">Paste link</button>
+            <button data-mode="upload" role="tab">Upload file</button>
+          </div>
+
+          <div class="pane" data-pane="url">
+            <label class="field-label" for="urlInput" style="margin-top:14px">Video link</label>
+            <input class="input" id="urlInput" type="text" spellcheck="false"
+                   placeholder="https://www.youtube.com/watch?v=…  ·  tiktok.com/…  ·  twitch.tv/videos/…">
+            <p class="hint">YouTube, TikTok, Instagram, Facebook, X, Twitch, Kick, Rumble, Vimeo, Zoom
+              recordings, podcast pages — or a direct video link.</p>
+          </div>
+
+          <div class="pane hidden" data-pane="upload">
+            <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose a file">
+              <input type="file" id="fileInput" hidden
+                     accept=".mp4,.mov,.webm,.mkv,.avi,.m4v,.mp3,.wav,.m4a,.aac,.ogg">
+              <span class="big">⬆️</span>
+              <strong id="dropLabel">Drop a video here, or click to browse</strong>
+              <small>MP4 · MOV · WEBM · MKV · AVI · MP3 · WAV — up to <span id="maxSize">2 GB</span></small>
+            </div>
+            <div id="uploadProg" class="hidden" style="margin-top:12px">
+              <div class="prog-top"><strong id="upStage">Uploading…</strong><span id="upPct">0%</span></div>
+              <div class="bar"><i id="upBar"></i></div>
+              <p class="hint" id="upDetail"></p>
+            </div>
+          </div>
+
+          <div class="preview-card" id="previewCard"></div>
+
+          <h2 style="margin-top:22px">Settings</h2>
+          <div class="row2">
+            <div>
+              <label class="field-label" for="langSelect">Language</label>
+              <select class="input" id="langSelect"></select>
+            </div>
+            <div>
+              <label class="field-label" for="countSelect">Number of clips</label>
+              <select class="input" id="countSelect"></select>
+            </div>
+          </div>
+
+          <label class="field-label" style="margin-top:14px">Clip length</label>
+          <div class="chips" id="lenChips"></div>
+
+          <label class="field-label" style="margin-top:14px">Target platform</label>
+          <div class="chips" id="platChips"></div>
+
+          <label class="field-label" for="instruction" style="margin-top:14px">Instruction <span style="color:var(--dim)">(optional)</span></label>
+          <textarea class="input" id="instruction" maxlength="500"
+                    placeholder="find the funniest moments · only moments about pricing · the most controversial take"></textarea>
+
+          <details style="margin-top:16px;border:1px solid var(--line);border-radius:12px;padding:0">
+            <summary style="cursor:pointer;padding:12px 14px;font-size:13px;color:var(--mut)">
+              Clip style &amp; captions — <span id="styleSummary">Moving · Brand · Montserrat · Medium · Center</span>
+            </summary>
+            <div style="padding:0 14px 14px">
+              <label class="field-label">Clip type</label>
+              <div class="seg full" id="kindMode">
+                <button class="active" data-kind="normal">Normal clips</button>
+                <button data-kind="hook">Hook clips</button>
+              </div>
+              <p class="hint" id="kindHint">Standard cut — scored moments with titles, a hook, caption and hashtags.</p>
+
+              <label class="field-label" style="margin-top:12px">Reframe layout</label>
+              <select class="input" id="layoutSelect"></select>
+
+              <label class="field-label" style="margin-top:12px">Caption motion</label>
+              <div class="chips" id="motionChips"></div>
+
+              <label class="field-label" style="margin-top:12px">Colour</label>
+              <div class="chips" id="paletteChips"></div>
+
+              <div class="row2" style="margin-top:12px">
+                <div><label class="field-label">Font</label><select class="input" id="fontSelect"></select></div>
+                <div><label class="field-label">Size</label><select class="input" id="sizeSelect"></select></div>
+              </div>
+              <label class="field-label" style="margin-top:12px">Placement</label>
+              <div class="chips" id="placeChips"></div>
+            </div>
+          </details>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;font-size:12.5px;color:var(--mut)">
+            <span id="costLine">Estimated cost: —</span>
+            <span id="balanceLine"></span>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="createBtn" style="margin-top:10px">
+            Create Viral Clips
+          </button>
+
+          <div class="notice">
+            <span>⚠️</span>
+            <span>By continuing, you confirm the video is your own or you have permission to use it.
+              Using others' content may violate copyright laws.</span>
+          </div>
+          <div class="err hidden" id="inputErr"></div>
+        </div>
+
+        <!-- progress / tips -->
+        <div class="cm-card" id="sideCard">
+          <div id="jobPanel" class="hidden">
+            <h2 id="jobTitle">Processing your video</h2>
+            <p class="sub">We're processing your video. This won't take long…</p>
+            <div class="prog-top"><strong id="jobStage">Queued</strong><span id="jobPct">0%</span></div>
+            <div class="bar"><i id="jobBar"></i></div>
+            <ol class="steps" id="jobSteps"></ol>
+            <div style="display:flex;gap:8px;margin-top:16px">
+              <button class="btn btn-ghost btn-sm" id="cancelJob">Cancel job</button>
+            </div>
+          </div>
+
+          <div id="emptyPanel">
+            <div class="empty-state">
+              <span class="big">🎬</span>
+              <p><strong style="color:var(--text)">Your ranked clips appear here.</strong><br>
+                The AI reads the transcript, measures audio energy, laughter and pacing, then scores every
+                moment on hook strength, retention, emotion, clarity, shareability and trend fit.</p>
+            </div>
+            <div style="margin-top:16px">
+              <label class="field-label">Recent projects</label>
+              <div id="recentList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================= results view ========================= -->
+    <section class="cm-view" id="view-results">
+      <div class="res-head">
+        <button class="cm-back" id="resBack" title="Back to input">←</button>
+        <div style="min-width:0">
+          <h1>All <span class="tint">Moments</span></h1>
+          <p class="res-sub" id="resTitle">—</p>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn btn-ghost btn-sm" id="filterBtn">⛃ Filters</button>
+        <select class="sort-select" id="sortSelect">
+          <option value="score">Sort: Highest Viral Score</option>
+          <option value="chrono">Chronological</option>
+          <option value="shortest">Shortest</option>
+          <option value="longest">Longest</option>
+        </select>
+      </div>
+
+      <div class="filters" id="filters">
+        <div class="f">
+          <label for="fMinScore">Min score · <b id="fMinScoreVal">0</b></label>
+          <input type="range" id="fMinScore" min="0" max="100" value="0" style="width:100%">
+        </div>
+        <div class="f">
+          <label for="fDurMin">Min length (s)</label>
+          <input class="input" id="fDurMin" type="number" min="0" value="0" style="padding:7px 9px">
+        </div>
+        <div class="f">
+          <label for="fDurMax">Max length (s)</label>
+          <input class="input" id="fDurMax" type="number" min="0" value="180" style="padding:7px 9px">
+        </div>
+        <div class="f">
+          <label for="fSpeaker">Speaker</label>
+          <select class="input" id="fSpeaker" style="padding:7px 9px"><option value="">All</option></select>
+        </div>
+        <div class="f" style="flex:1;min-width:160px">
+          <label for="fKeyword">Keyword</label>
+          <input class="input" id="fKeyword" placeholder="money, pricing…" style="padding:7px 9px">
+        </div>
+      </div>
+
+      <div class="bulk-bar">
+        <span class="count" id="selCount">Select clips to enable bulk actions</span>
+        <div class="bulk-actions">
+          <button class="btn btn-ghost btn-sm" id="bulkEdit" disabled>Bulk Edit</button>
+          <button class="btn btn-ghost btn-sm" id="bulkSchedule" disabled>Bulk Schedule</button>
+          <button class="btn btn-ghost btn-sm" id="bulkExport" disabled>Bulk Export</button>
+          <button class="btn btn-ghost btn-sm" id="bulkMontage" disabled>Create Montage</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" id="tabViral">Viral Moments (<span id="viralCount">0</span>)</button>
+        <button class="tab" id="tabFind">+ Find Moments</button>
+      </div>
+
+      <div class="find-panel" id="findPanel">
+        <div class="find-row">
+          <input class="input" id="findQuery" placeholder="What are you looking for? e.g. when he drops the phone, all mentions of price">
+          <button class="btn btn-primary" id="findBtn">Search</button>
+        </div>
+        <div class="find-chips">
+          <button data-q="the funniest reactions">funniest reactions</button>
+          <button data-q="all mentions of price or money">mentions of price</button>
+          <button data-q="the most controversial opinion">controversial take</button>
+          <button data-q="a surprising number or result">surprising number</button>
+        </div>
+        <p class="hint" id="findHint">Semantic search over the transcript. New matches are added as clips.</p>
+      </div>
+
+      <div class="toolbar">
+        <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)">
+          <input type="checkbox" id="selectAll">
+          <span id="selectAllLabel">Select all 0 clips</span>
+        </label>
+        <span class="muted" id="shownCount" style="margin-left:auto;font-size:12px"></span>
+      </div>
+
+      <div class="clip-grid" id="clipGrid"></div>
+      <div style="display:flex;justify-content:center;margin-top:20px">
+        <button class="btn btn-ghost hidden" id="loadMore">Load more clips</button>
+      </div>
+    </section>
+
+    <!-- ========================= library view ========================= -->
+    <section class="cm-view" id="view-library">
+      <div class="cm-head">
+        <span class="eyebrow">Library</span>
+        <h1>Clipping projects</h1>
+        <p>Every source video you have clipped, plus the exports rendered from it. Projects reopen exactly where you left them.</p>
+      </div>
+      <div class="lib-grid" id="libGrid"></div>
+      <h2 style="margin-top:32px;font-size:17px">Exports</h2>
+      <p class="sub muted" style="font-size:12.5px">Rendered clip files and montages.</p>
+      <div id="exportList" style="margin-top:12px"></div>
+    </section>
+
+    <!-- ======================== scheduler view ======================== -->
+    <section class="cm-view" id="view-scheduler">
+      <div class="cm-head">
+        <span class="eyebrow">Scheduler</span>
+        <h1>Scheduled clips</h1>
+        <p>Drag a post to another day to reschedule it. Scheduled posts publish on the next run of the publishing job.</p>
+      </div>
+      <div class="cal-head">
+        <button class="btn btn-ghost btn-sm" id="calPrev">←</button>
+        <strong id="calLabel" style="font-size:13px">This week</strong>
+        <button class="btn btn-ghost btn-sm" id="calNext">→</button>
+        <span class="muted" style="font-size:12px;margin-left:8px" id="calCounts"></span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </section>
+
+    <!-- CHANGED: the site's shared footer — same markup and classes as
+         index.html, so theme.css styles every page's footer from one copy. -->
+    <footer class="foot app-foot">
+      <div class="foot-top">
+        <div class="foot-brand">
+          <a class="mark" href="index.html">
+            <svg class="mark-glyph" viewBox="0 0 64 64" aria-hidden="true">
+              <path d="M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M22 42 42 22" stroke="var(--blue)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+            <span class="mark-word">Frame<span class="mark-tint">wright</span></span>
+          </a>
+          <p>The workbench for people who&rsquo;d rather tell the story than babysit the timeline.</p>
+          <div class="socials">
+            <a href="#" aria-label="Community">◎</a>
+            <a href="#" aria-label="Video channel">▷</a>
+            <a href="#" aria-label="Developer updates">&lt;/&gt;</a>
+          </div>
+        </div>
+
+        <nav class="foot-col" aria-label="Product">
+          <h4>Bench</h4>
+          <a href="editor.html#start">The Editor</a>
+          <a href="clip-maker.html">Cut Room</a>
+          <a href="studio.html#summarizer">Chapter Break</a>
+          <a href="studio.html#v2t">Spoken Type</a>
+          <a href="studio.html#notes">Meeting Ledger</a>
+        </nav>
+
+        <nav class="foot-col" aria-label="Workspace">
+          <h4>Workspace</h4>
+          <a href="editor.html#home">Home</a>
+          <a href="editor.html#library">Library</a>
+          <a href="editor.html#scheduler">Scheduler</a>
+          <a href="editor.html#brandkit">Brand Kit</a>
+        </nav>
+
+        <nav class="foot-col" aria-label="Company">
+          <h4>Shop</h4>
+          <a href="pricing.html">Pricing</a>
+          <a href="index.html#faq">Q&amp;A</a>
+          <a href="#">Changelog</a>
+          <a href="#">Say hello</a>
+        </nav>
+
+        <nav class="foot-col" aria-label="Legal">
+          <h4>Small print</h4>
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">Cookies</a>
+          <a href="#">Security</a>
+        </nav>
+      </div>
+
+      <div class="foot-base">
+        <p>&copy; <span data-year>2026</span> Framewright. Cut with care.</p>
+        <p class="foot-fine">Every graphic on this site is drawn in CSS and SVG — no photography, no stock, no third-party artwork.</p>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<div class="toast-wrap" id="toasts"></div>
+<div id="modalRoot"></div>
+
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/clipmaker.js" defer></script>
+<script src="assets/js/feedback.js"></script>
+</body>
+</html>

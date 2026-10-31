@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Video Editor — Framewright</title>
+<meta name="description" content="Browser-based AI video editor: transcript editing, reframe, subtitles, effects, AI tools and server-side FFmpeg export.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Shared design system (tokens, navbar, footer) — loaded before the page styles. -->
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/sidebar.css">
+<link rel="stylesheet" href="assets/css/editor.css">
+<link rel="stylesheet" href="assets/css/feedback.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%230B1116'/><path d='M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38' stroke='%2300FF9C' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/><path d='M22 42 42 22' stroke='%231E90FF' stroke-width='4' stroke-linecap='round'/></svg>">
+</head>
+<body class="editor-app">
+
+<!-- ===================== top bar ===================== -->
+<header class="topbar" id="topbar">
+  <a class="brand" href="index.html" title="Framewright home">
+    <span class="brand-mark"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 42 42 22" stroke="var(--blue)" stroke-width="5" stroke-linecap="round"/></svg></span>
+    Frame<span class="brand-thin">wright</span>
+  </a>
+  <span class="tb-page" aria-current="page">Editor</span>
+  <button class="tb-btn" id="backArrow" title="Back">←</button>
+  <a class="tb-btn" href="studio.html" title="The other studio tools">Skills</a>
+
+  <div class="drop" data-drop>
+    <button class="tb-btn" data-drop-toggle>🌐 <span id="langLabel">Language</span></button>
+    <div class="drop-menu">
+      <div class="drop-head">UI language &amp; transcription default</div>
+      <div id="langList"></div>
+      <div class="drop-head">Note</div>
+      <div class="drop-item"><span>i</span><span><strong>Transcription/translation language</strong>
+        <small>The interface ships in English; this picker sets the document language and the default language sent to Whisper and to Translate.</small></span></div>
+    </div>
+  </div>
+
+  <div class="drop" data-drop>
+    <button class="tb-btn" data-drop-toggle>Tools <span aria-hidden="true">▾</span></button>
+    <div class="drop-menu">
+      <div class="drop-head">Editor tools</div>
+      <div id="toolsDrop"></div>
+      <div class="drop-head">Pages</div>
+      <button class="drop-item" data-goto="home"><span>🏠</span><span><strong>Home</strong><small>Recent projects &amp; quick starts</small></span></button>
+      <button class="drop-item" data-goto="library"><span>📚</span><span><strong>Library</strong><small>Projects, exports, uploads</small></span></button>
+      <button class="drop-item" data-goto="scheduler"><span>🗓</span><span><strong>Scheduler</strong><small>Calendar of posts</small></span></button>
+      <button class="drop-item" data-goto="brandkit"><span>🎨</span><span><strong>Brand Kit</strong><small>Logos, styles, colours, fonts</small></span></button>
+    </div>
+  </div>
+
+  <button class="tb-btn" id="communityBtn">Community</button>
+  <div class="tb-spacer"></div>
+
+  <span class="credits-pill" id="creditsPill" title="Credits balance">
+    <span aria-hidden="true">⚡</span><b id="creditCount">—</b>
+    <button class="btn btn-sm btn-green" id="upgradeBtn" style="height:24px;padding:0 9px">Upgrade</button>
+  </span>
+
+  <div class="drop" data-drop>
+    <button class="tb-btn badge-dot" id="bellBtn" data-drop-toggle title="Notifications">🔔</button>
+    <div class="drop-menu right" style="min-width:320px">
+      <div class="drop-head spread"><span>Notifications</span>
+        <button class="tb-btn" id="markRead" style="height:24px;font-size:12px">Mark all read</button></div>
+      <div id="notifList"></div>
+    </div>
+  </div>
+
+  <div class="drop" data-drop>
+    <button class="avatar" data-drop-toggle id="avatarBtn" title="Account">W</button>
+    <div class="drop-menu right">
+      <div class="drop-item"><span>👤</span><span><strong>Local creator</strong><small>Single-user install — projects stay on this machine</small></span></div>
+      <button class="drop-item" data-goto="brandkit"><span>🎨</span><span><strong>Brand Kit</strong><small>Reusable logos, styles, colours</small></span></button>
+      <button class="drop-item" data-goto="pricing"><span>💳</span><span><strong>Pricing &amp; credits</strong><small>Plans, balance and the ledger</small></span></button>
+      <button class="drop-item" data-goto="rewards"><span>🎁</span><span><strong>Rewards</strong><small>Earn credits for tasks</small></span></button>
+      <button class="drop-item" id="signOut"><span>🚪</span><span><strong>Sign out</strong><small>Clears the local session only</small></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="err" id="shellBanner" hidden style="position:fixed;top:56px;left:0;right:0;z-index:70;border-radius:0"></div>
+
+<!-- ===================== body ===================== -->
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div data-sidebar data-nav="spa"></div>
+    <div class="side-foot" id="sidebarFoot">Checking credits…</div>
+  </aside>
+  <main class="main" id="main">
+    <div class="page"><h1>Loading the editor…</h1><p class="lead">Starting the engine and reading your projects.</p></div>
+  </main>
+</div>
+
+<div class="modal-back" id="modalHost"></div>
+<div class="toasts" id="toasts"></div>
+
+<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/editor.js"></script>
+<script src="assets/js/editor-views.js"></script>
+<script src="assets/js/editor-panels.js"></script>
+<!-- visual-only chrome: shared footer, tablet panel drawer, phone notice -->
+<script src="assets/js/editor-theme.js"></script>
+<script>
+/* shell-only wiring: dropdown menus, sidebar routing and the language picker */
+(function () {
+  'use strict';
+  document.addEventListener('click', function (ev) {
+    const toggle = ev.target.closest('[data-drop-toggle]');
+    document.querySelectorAll('.drop.open').forEach(function (d) {
+      if (!toggle || !d.contains(toggle)) d.classList.remove('open');
+    });
+    if (toggle) toggle.parentElement.classList.add('open');
+    const modalClose = ev.target.closest('[data-close]');
+    if (modalClose) window.WVE.closeModal();
+    const back = ev.target.closest('#modalHost');
+    if (back && ev.target.id === 'modalHost') window.WVE.closeModal();
+  });
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape') window.WVE.closeModal();
+  });
+  const go = (page) => { location.hash = '#' + page; window.WVE.showPage(page); };
+  document.querySelectorAll('[data-page]').forEach(function (b) {
+    b.addEventListener('click', function () { go(b.dataset.page); });
+  });
+  document.querySelectorAll('[data-goto]').forEach(function (b) {
+    b.addEventListener('click', function () { go(b.dataset.goto); });
+  });
+  document.getElementById('backArrow').onclick = () => go('library');
+  document.getElementById('upgradeBtn').onclick = () => go('pricing');
+  document.getElementById('avatarBtn').onclick = function () { /* menu opens via the dropdown handler */ };
+  document.getElementById('signOut').onclick = function () {
+    localStorage.removeItem('wv.lang');
+    window.WVE.toast('Signed out', 'local session only — nothing was deleted');
+  };
+  document.getElementById('communityBtn').onclick = function () {
+    window.WVE.openModal('community');
+  };
+  document.getElementById('markRead').onclick = async function () {
+    await window.WVE.api.post('/api/notifications/read', { ids: null });
+    window.WVE.refreshNotifications();
+  };
+  /* tools dropdown + language picker are filled once /api/editor/meta answers */
+  document.addEventListener('DOMContentLoaded', function () {
+    const toolsDrop = document.getElementById('toolsDrop');
+    const railWait = setInterval(function () {
+      const rail = (window.WVE.S.meta || {}).tool_rail || [];
+      if (!rail.length) return;
+      clearInterval(railWait);
+      toolsDrop.innerHTML = rail.map(function (t) {
+        return '<button class="drop-item" data-tool-jump="' + t.key + '"><span>' + t.icon +
+          '</span><span><strong>' + t.label + '</strong></span></button>';
+      }).join('');
+      toolsDrop.querySelectorAll('[data-tool-jump]').forEach(function (b) {
+        b.onclick = function () {
+          const S = window.WVE.S;
+          if (!S.project) { window.WVE.showPage('start'); return; }
+          S.tool = b.dataset.toolJump;
+          window.WVE.showPage('editor');
+          document.querySelectorAll('[data-tool]').forEach(function (r) {
+            r.classList.toggle('active', r.dataset.tool === S.tool);
+          });
+          window.WVE.renderPanel();
+        };
+      });
+    }, 120);
+    const list = document.getElementById('langList');
+    const label = document.getElementById('langLabel');
+    const languages = (window.WVE.S.meta || {}).languages || [];
+    const stored = localStorage.getItem('wv.lang') || 'en';
+    function paint() {
+      list.innerHTML = languages.map(function (l) {
+        return '<button class="drop-item" data-lang="' + l.code + '"><span>' +
+          (l.code === stored ? '●' : '○') + '</span><span><strong>' + l.label +
+          '</strong><small>' + l.code + '</small></span></button>';
+      }).join('');
+      const current = languages.find((l) => l.code === stored);
+      label.textContent = current ? current.label : 'Language';
+      document.documentElement.lang = stored;
+      list.querySelectorAll('[data-lang]').forEach(function (b) {
+        b.onclick = function () {
+          localStorage.setItem('wv.lang', b.dataset.lang);
+          stored = b.dataset.lang;
+          window.WVE.S.defaultLanguage = stored;
+          paint();
+          window.WVE.toast('Language set', 'used by default for transcription and translation');
+        };
+      });
+    }
+    const wait = setInterval(function () {
+      if (window.WVE.S.meta) { clearInterval(wait); paint(); }
+    }, 120);
+  });
+})();
+</script>
+<script src="assets/js/feedback.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# Secrets — never commit these.
+.env
+
+# Dependencies + runtime data
+node_modules/
+data/
+*.log

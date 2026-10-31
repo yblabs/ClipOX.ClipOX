@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <!-- not for search engines; all data is also protected on the server -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Feedback · Framewright admin</title>
+
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+
+<body class="admin-app">
+  <!-- ============================================================= TOPBAR -->
+  <header class="a-topbar">
+    <a class="brand" href="index.html" aria-label="Framewright home">
+      <svg class="mark-glyph" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M22 42 42 22" stroke="var(--blue)" stroke-width="5" stroke-linecap="round"/>
+      </svg>
+      <span class="mark-word">Frame<span class="mark-tint">wright</span></span>
+    </a>
+    <span class="a-chip">Admin</span>
+    <span class="a-spacer"></span>
+    <span class="who">Logged in as <b id="whoName">admin</b></span>
+    <button class="adm-btn sm ghost" id="logoutBtn" type="button">Logout</button>
+  </header>
+
+  <main class="a-main">
+    <!-- Shown when this URL is served by something other than the Node
+         server (no admin API behind it) — nothing can load in that case. -->
+    <div class="api-missing a-missing" id="apiMissing" role="alert" hidden>
+      <span class="glyph" aria-hidden="true">↗</span>
+      <h3>The admin console lives on the Node server</h3>
+      <p>
+        This address only serves the site files, so it has no admin API and no
+        session cookie. Open the console on the admin server instead:
+      </p>
+      <a class="adm-btn primary" id="apiLink" href="#">Open the admin console →</a>
+    </div>
+
+    <div id="adminBody">
+    <div class="a-head">
+      <div class="grow">
+        <p class="k-label">Feedback</p>
+        <h1>Manage <span class="tint">feedback</span></h1>
+        <p class="sub">
+          Approved reviews appear in the public “What creators are saying”
+          carousel — pending and hidden ones never do.
+        </p>
+      </div>
+      <div class="a-head-actions">
+        <button class="adm-btn" id="refreshBtn" type="button">↻ Refresh</button>
+        <button class="adm-btn" id="csvBtn" type="button">Export CSV</button>
+      </div>
+    </div>
+
+    <!-- =========================================================== STATS -->
+    <section class="stats" id="stats" aria-label="Feedback statistics" aria-busy="true">
+      <!-- skeleton stat cards while the first load runs -->
+      <div class="stat"><span class="n"><span class="skel" style="display:block;width:60%"></span></span><span class="l">Total feedback</span></div>
+      <div class="stat"><span class="n"><span class="skel" style="display:block;width:60%"></span></span><span class="l">Average rating</span></div>
+      <div class="stat"><span class="n"><span class="skel" style="display:block;width:60%"></span></span><span class="l">Pending</span></div>
+      <div class="stat"><span class="n"><span class="skel" style="display:block;width:60%"></span></span><span class="l">New this week</span></div>
+    </section>
+
+    <!-- ============================================================ LIST -->
+    <section class="a-panel" aria-label="Feedback list">
+      <!-- tabs -->
+      <div class="tabs" role="tablist" aria-label="Feedback type">
+        <button class="tab" role="tab" id="tab-all"         data-tab="all"         aria-selected="true">All <span class="cnt" id="cntAll">–</span></button>
+        <button class="tab" role="tab" id="tab-review"      data-tab="review"      aria-selected="false">Reviews <span class="cnt" id="cntReview">–</span></button>
+        <button class="tab" role="tab" id="tab-suggestion"  data-tab="suggestion"  aria-selected="false">Suggestions <span class="cnt" id="cntSuggestion">–</span></button>
+      </div>
+
+      <!-- filters -->
+      <div class="filters" role="group" aria-label="Filters">
+        <div class="f">
+          <label for="fStatus">Status</label>
+          <select class="adm-select" id="fStatus">
+            <option value="">Any status</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="hidden">Hidden</option>
+          </select>
+        </div>
+        <div class="f">
+          <label for="fRating">Rating</label>
+          <select class="adm-select" id="fRating">
+            <option value="">Any rating</option>
+            <option value="5">5 stars</option>
+            <option value="4">4 stars</option>
+            <option value="3">3 stars</option>
+            <option value="2">2 stars</option>
+            <option value="1">1 star</option>
+          </select>
+        </div>
+        <div class="f"><label for="fFrom">From</label><input class="adm-input" type="date" id="fFrom"></div>
+        <div class="f"><label for="fTo">To</label><input class="adm-input" type="date" id="fTo"></div>
+        <div class="f">
+          <label for="fSort">Sort</label>
+          <select class="adm-select" id="fSort">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="rating_desc">Highest rating</option>
+            <option value="rating_asc">Lowest rating</option>
+          </select>
+        </div>
+        <div class="f grow">
+          <label for="fSearch">Search</label>
+          <input class="adm-input" type="search" id="fSearch" placeholder="Name, role, message, email…">
+        </div>
+      </div>
+
+      <!-- bulk actions -->
+      <div class="bulk">
+        <span class="count" id="selCount" aria-live="polite"><b>0</b> selected</span>
+        <div class="acts">
+          <button class="adm-btn sm" id="bulkApprove" type="button" disabled>✓ Approve</button>
+          <button class="adm-btn sm" id="bulkHide" type="button" disabled>◌ Hide</button>
+          <button class="adm-btn sm danger" id="bulkDelete" type="button" disabled>Delete</button>
+        </div>
+      </div>
+
+      <!-- table (turns into cards at ≤880px) -->
+      <div class="table-scroll">
+        <table class="a-table" id="aTable">
+          <thead>
+            <tr>
+              <th class="c-sel"><input type="checkbox" id="selAll" aria-label="Select all feedback on this page"></th>
+              <th scope="col">Date</th>
+              <th scope="col">Type</th>
+              <th scope="col">Rating</th>
+              <th scope="col">From</th>
+              <th scope="col">Message</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <!-- loading skeletons -->
+            <tr class="skel-row"><td colspan="8"><div class="skel" style="width:100%"></div></td></tr>
+            <tr class="skel-row"><td colspan="8"><div class="skel" style="width:88%"></div></td></tr>
+            <tr class="skel-row"><td colspan="8"><div class="skel" style="width:94%"></div></td></tr>
+            <tr class="skel-row"><td colspan="8"><div class="skel" style="width:80%"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- friendly empty state -->
+      <div class="empty-state" id="emptyState" hidden>
+        <span class="glyph" aria-hidden="true">✦</span>
+        <h3 id="emptyTitle">Nothing here yet</h3>
+        <p id="emptyText">When visitors submit a review or suggestion it will show up on this page.</p>
+        <button class="adm-btn sm" id="clearFilters" type="button" hidden>Clear filters</button>
+      </div>
+
+      <div class="load-more" id="loadMoreWrap" hidden>
+        <button class="adm-btn" id="loadMoreBtn" type="button">Load more</button>
+      </div>
+    </section>
+    </div><!-- /#adminBody -->
+  </main>
+
+  <!-- ============================================================= MODALS -->
+  <div class="backdrop" id="backdrop" hidden>
+
+    <!-- View full message -->
+    <div class="dialog wide" id="viewDlg" role="dialog" aria-modal="true" aria-labelledby="viewTitle" hidden>
+      <button class="d-close" data-close type="button" aria-label="Close dialog">✕</button>
+      <p class="k-label">Feedback</p>
+      <h2 id="viewTitle">Full message</h2>
+      <div class="meta-row" id="viewMeta"></div>
+      <div class="d-read" id="viewBody"></div>
+      <div class="d-actions">
+        <button class="adm-btn" data-close type="button">Close</button>
+        <button class="adm-btn primary" id="viewEdit" type="button">Edit</button>
+      </div>
+    </div>
+
+    <!-- Edit -->
+    <div class="dialog" id="editDlg" role="dialog" aria-modal="true" aria-labelledby="editTitle" hidden>
+      <button class="d-close" data-close type="button" aria-label="Close dialog">✕</button>
+      <p class="k-label">Edit</p>
+      <h2 id="editTitle">Edit feedback</h2>
+      <form id="editForm" class="d-grid">
+        <div>
+          <label class="k-label" for="eName">Name</label>
+          <input class="adm-input" id="eName" type="text" maxlength="60" required>
+        </div>
+        <div>
+          <label class="k-label" for="eRole">Role / channel</label>
+          <input class="adm-input" id="eRole" type="text" maxlength="60" placeholder="Creator">
+        </div>
+        <div class="d-grid" style="grid-template-columns:1fr 1fr" id="eRatingWrap">
+          <div>
+            <label class="k-label" for="eRating">Rating</label>
+            <select class="adm-select" id="eRating">
+              <option value="5">★★★★★ 5</option>
+              <option value="4">★★★★ 4</option>
+              <option value="3">★★★ 3</option>
+              <option value="2">★★ 2</option>
+              <option value="1">★ 1</option>
+            </select>
+          </div>
+          <div>
+            <label class="k-label" for="eStatus">Status</label>
+            <select class="adm-select" id="eStatus">
+              <option value="pending">Pending</option>
+              <option value="approved">Approved (public)</option>
+              <option value="hidden">Hidden</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="k-label" for="eMessage">Message</label>
+          <textarea class="adm-textarea" id="eMessage" maxlength="600" required></textarea>
+        </div>
+        <div class="d-actions">
+          <button class="adm-btn" data-close type="button">Cancel</button>
+          <button class="adm-btn primary" id="editSave" type="submit">Save changes</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Confirm delete -->
+    <div class="dialog" id="confirmDlg" role="alertdialog" aria-modal="true"
+         aria-labelledby="confirmTitle" aria-describedby="confirmText" hidden>
+      <h2 id="confirmTitle">Delete this feedback permanently?</h2>
+      <p class="d-sub" id="confirmText">This cannot be undone.</p>
+      <div class="d-actions">
+        <button class="adm-btn" data-close type="button">Cancel</button>
+        <button class="adm-btn danger" id="confirmYes" type="button">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

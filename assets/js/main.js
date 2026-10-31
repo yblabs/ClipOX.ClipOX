@@ -341,8 +341,8 @@
     if (hint) {
       hint.textContent =
         cycle === 'annual'
-          ? 'Annual billing: Pro $9.58/mo and Scale $69.99/mo, billed yearly — credits granted upfront.'
-          : 'Switch to annual and Pro drops to $9.58/mo, billed yearly.';
+          ? 'Annual billing is not required — the Free plan is $0 forever.'
+          : 'Every tool is included on the Free plan — $0 forever, no card required.';
     }
     if (typeof renderEstimator === 'function') renderEstimator();
     document.dispatchEvent(new CustomEvent('cyclechange', { detail: { cycle } }));
@@ -402,11 +402,9 @@
       const minutes = parseInt(range.value, 10);
       const isAnnual = cycle === 'annual';
 
+      // Only the Free plan ships right now — paid tiers (Pro/Scale/Enterprise) are off the page.
       const plans = [
-        { name: 'Free', cap: 100, price: 0, cta: 'Get Started With Free Plan' },
-        { name: 'Pro', cap: isAnnual ? 12000 : 1000, price: isAnnual ? 9.58 : 26.99, cta: 'Start with Pro' },
-        { name: 'Scale', cap: isAnnual ? 72000 : 6000, price: isAnnual ? 69.99 : 139.99, cta: 'Start with Scale' },
-        { name: 'Enterprise', cap: Infinity, price: null, cta: 'Contact Sales' }
+        { name: 'Free', cap: Infinity, price: 0, cta: 'Get Started With Free Plan' }
       ];
 
       const pick = plans.find((p) => minutes <= p.cap) || plans[plans.length - 1];

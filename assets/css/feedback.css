@@ -1,0 +1,424 @@
+/* ==========================================================================
+   FEEDBACK / REVIEW WIDGET  —  Framewright
+   Self-contained styles for the floating "Feedback" trigger and the
+   review + suggestion modal. Loads AFTER the page's own stylesheet and
+   only uses that sheet's colour tokens when they exist (every value has
+   a fallback, so the widget also looks right on pages that use the older
+   stylesheet).
+
+   Contents
+     1. Tokens (with fallbacks)
+     2. Floating trigger (bottom-left, pulse)
+     3. Overlay + glass modal (gradient border, mobile bottom sheet)
+     4. Tabs
+     5. Forms: fields, star rating, counters, errors, buttons
+     6. Success screen
+     7. Reduced motion
+   ========================================================================== */
+
+/* --------------------------------------------------- 1. Tokens ---------- */
+.fw-root,
+.fw-overlay{
+  /* Pull the host page's palette; fall back to the site defaults. */
+  --fw-green: var(--green, #00FF9C);
+  --fw-green-deep: var(--green-deep, #10B981);
+  --fw-blue: var(--blue, #1E90FF);
+  --fw-bg-0: var(--bg-0, #05080A);
+  --fw-bg-1: var(--bg-1, #0B1116);
+  --fw-line: var(--line, rgba(255, 255, 255, .09));
+  --fw-txt: var(--txt, #E9F2F4);
+  --fw-dim: var(--txt-dim, #A7B7C2);
+  --fw-faint: var(--txt-faint, #7C8B96);
+  --fw-display: var(--font-display, "Space Grotesk", system-ui, sans-serif);
+  --fw-r-lg: 22px;
+  --fw-r-md: 14px;
+}
+
+
+/* ------------------------------------------- 2. Floating trigger -------- */
+.fw-trigger{
+  position: fixed;
+  left: 16px;
+  bottom: 18px;
+  z-index: 960;                       /* above dock (65) and back-to-top (64) */
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 20px;  border:1px solid rgba(0,255,156,.45);
+  border-radius:999px;
+  background: rgba(7, 11, 14, .92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--fw-txt);
+  font-family: var(--fw-display);
+  font-size: .9rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 16px 44px -20px rgba(0, 255, 156, .8);
+  transition: transform .25s cubic-bezier(.2, .7, .2, 1),
+              border-color .25s, box-shadow .35s;
+}
+.fw-trigger:hover{
+  transform: translateY(-2px);  border-color:rgba(0,255,156,.7);
+  box-shadow:0 18px 46px -16px rgba(0,255,156,.9),
+              0 0 26px -8px rgba(30, 144, 255, .6);
+}
+.fw-trigger:focus-visible{outline:2px solid var(--fw-blue);outline-offset:3px}
+.fw-trigger .fw-ico{width:18px;height:18px;flex:0 0 auto;color:var(--fw-green)}
+
+/* subtle ring pulse, once every ~10s */
+.fw-trigger::after{
+  content:"";
+  position:absolute;inset:-4px;
+  border:1px solid rgba(0,255,156,.6);
+  border-radius:inherit;
+  opacity:0;
+  pointer-events:none;
+  animation:fw-pulse 10s cubic-bezier(.2,.7,.2,1) infinite;
+}
+@keyframes fw-pulse{
+  0%   {opacity:.75; transform:scale(1)}
+  3.5% {opacity:0;   transform:scale(1.16)}
+  100% {opacity:0;   transform:scale(1.16)}
+}
+
+@media (max-width: 640px){
+  /* icon only on phones … */
+  .fw-trigger{padding:14px;left:12px;bottom:14px}
+  .fw-trigger .fw-trigger-label{display:none}
+  /* … and step above the sticky bottom dock when it is showing */
+  body:has(.dock.show) .fw-trigger{bottom:86px}
+}
+
+
+/* -------------------------------------- 3. Overlay + glass modal ------- */
+.fw-overlay{
+  position:fixed; inset:0;
+  z-index:980;
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+  background:rgba(3,6,8,.74);
+  backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);
+  opacity:0;
+  transition:opacity .28s cubic-bezier(.2,.7,.2,1);
+}
+.fw-overlay.is-open{opacity:1}
+.fw-overlay[hidden]{display:none}
+
+.fw-modal{
+  position:relative;
+  width:min(560px,100%);
+  max-height:min(88vh, 780px);
+  overflow-y:auto;
+  padding:26px 26px 22px;
+  border-radius:var(--fw-r-lg);
+  background:
+    linear-gradient(155deg, rgba(11,17,22,.94), rgba(5,8,10,.96));
+  box-shadow:0 50px 120px -40px #000, 0 0 60px -30px rgba(0,255,156,.35);
+  transform:scale(.94) translateY(16px);
+  opacity:0;
+  transition:transform .3s cubic-bezier(.2,.7,.2,1), opacity .3s;
+}
+.fw-overlay.is-open .fw-modal{transform:none;opacity:1}
+
+/* 1px green → blue gradient border (mask trick, no extra wrapper) */
+.fw-modal::before{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  padding:1px;
+  background:linear-gradient(135deg, var(--fw-green), var(--fw-blue));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask-composite:exclude;
+  pointer-events:none;
+}
+
+.fw-close{
+  position:absolute; top:14px; right:14px;
+  width:34px;height:34px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  border:1px solid var(--fw-line);
+  background:rgba(255,255,255,.04);
+  color:var(--fw-dim);
+  font-size:17px;line-height:1;
+  transition:color .2s, border-color .2s, transform .2s;
+}
+.fw-close:hover{color:#fff;border-color:var(--fw-green);transform:rotate(90deg)}
+
+.fw-head{margin-bottom:18px;padding-right:40px}
+.fw-head h2{
+  font-family:var(--fw-display);
+  font-size:1.35rem;font-weight:700;letter-spacing:-.01em;
+  color:var(--fw-txt);
+}
+.fw-head p{margin-top:4px;font-size:.88rem;color:var(--fw-faint)}
+
+.fw-privacy{
+  margin-top:14px;
+  font-size:.78rem;
+  color:var(--fw-faint);
+  text-align:center;
+}
+
+
+/* ------------------------------------------------- 4. Tabs ------------- */
+.fw-tabs{
+  display:flex;gap:5px;
+  padding:5px;
+  margin-bottom:18px;
+  border:1px solid var(--fw-line);
+  border-radius:999px;
+  background:rgba(0,0,0,.4);
+}
+.fw-tab{
+  flex:1;
+  padding:9px 12px;
+  border-radius:999px;
+  font-family:var(--fw-display);
+  font-size:.85rem;font-weight:600;
+  color:var(--fw-dim);
+  transition:background .25s, color .2s;
+}
+.fw-tab:hover{color:#fff}
+.fw-tab[aria-selected="true"]{
+  background:linear-gradient(180deg, var(--fw-green), var(--fw-green-deep));
+  color:#04140D;
+  box-shadow:0 10px 24px -14px rgba(0,255,156,.9);
+}
+.fw-tab:focus-visible{outline:2px solid var(--fw-blue);outline-offset:2px}
+
+
+/* -------------------------------------------- 5. Forms ----------------- */
+.fw-panel[hidden]{display:none}
+
+.fw-field{margin-bottom:14px}
+.fw-label{
+  display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  margin-bottom:6px;
+  font-family:var(--fw-display);
+  font-size:.8rem;font-weight:600;
+  letter-spacing:.04em;
+  color:var(--fw-dim);
+}
+.fw-label .fw-req{color:var(--fw-green)}
+.fw-label .fw-count{font-size:.72rem;color:var(--fw-faint);font-variant-numeric:tabular-nums}
+
+.fw-input,.fw-select,.fw-area{
+  width:100%;
+  padding:11px 14px;
+  border:1px solid var(--fw-line);
+  border-radius:12px;
+  background:rgba(255,255,255,.045);
+  color:var(--fw-txt);
+  font-family:inherit;
+  font-size:.93rem;
+  transition:border-color .2s, box-shadow .25s, background .2s;
+}
+.fw-area{min-height:96px;resize:vertical;line-height:1.55}
+.fw-select{appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--fw-dim) 50%),
+                   linear-gradient(135deg,var(--fw-dim) 50%,transparent 50%);
+  background-position:calc(100% - 18px) calc(50% + 2px), calc(100% - 13px) calc(50% + 2px);
+  background-size:5px 5px,5px 5px;
+  background-repeat:no-repeat;
+  padding-right:36px;
+}
+.fw-select option{background:var(--fw-bg-1);color:var(--fw-txt)}
+.fw-input::placeholder,.fw-area::placeholder{color:#5d6b76}
+.fw-input:focus,.fw-select:focus,.fw-area:focus{
+  outline:none;
+  border-color:rgba(0,255,156,.65);
+  box-shadow:0 0 0 3px rgba(0,255,156,.18);
+  background:rgba(255,255,255,.06);
+}
+.fw-input[aria-invalid="true"],.fw-area[aria-invalid="true"],.fw-select[aria-invalid="true"]{
+  border-color:#ff6b6b;
+  box-shadow:0 0 0 3px rgba(255,107,107,.15);
+}
+
+/* side-by-side row (name + role) */
+.fw-row{display:flex;gap:10px}
+.fw-row .fw-field{flex:1;min-width:0}
+@media (max-width:420px){.fw-row{flex-direction:column;gap:0}}
+
+/* inline error text */
+.fw-err{
+  display:none;
+  margin-top:6px;
+  font-size:.78rem;
+  color:#ff8787;
+}
+.fw-err.show{display:block}
+
+/* ---- star rating ---- */
+.fw-stars{
+  position:relative;
+  display:flex;gap:6px;
+}
+.fw-stars label{
+  position:relative;
+  display:grid;place-items:center;
+  width:38px;height:38px;
+  border-radius:10px;
+  border:1px solid transparent;
+  background:rgba(255,255,255,.03);
+  font-size:19px;line-height:1;
+  color:#37424c;
+  cursor:pointer;
+  transition:color .15s, transform .15s, border-color .15s;
+}
+.fw-stars label:hover{transform:translateY(-2px)}
+.fw-stars label.on{
+  color:var(--fw-green);
+  border-color:rgba(0,255,156,.45);
+  text-shadow:0 0 14px rgba(0,255,156,.75);
+}
+.fw-stars input{
+  position:absolute;opacity:0;width:1px;height:1px;margin:-1px;
+  pointer-events:none;
+}
+.fw-stars label:has(input:checked){border-color:rgba(0,255,156,.55)}
+.fw-stars label:has(input:focus-visible){outline:2px solid var(--fw-blue);outline-offset:2px}
+
+/* honeypot — never visible, never focusable */
+.fw-hp{
+  position:absolute !important;
+  left:-9999px !important;
+  width:1px;height:1px;
+  opacity:0;
+  pointer-events:none;
+}
+
+/* checkbox row */
+.fw-check-row{
+  display:flex;gap:10px;align-items:flex-start;
+  font-size:.84rem;color:var(--fw-dim);
+  cursor:pointer;
+}
+.fw-check-row input{
+  flex:0 0 auto;
+  width:16px;height:16px;margin-top:2px;
+  accent-color:var(--fw-green);
+}
+
+/* form-level message (rate limit, network) */
+.fw-form-err{
+  display:none;
+  margin-bottom:12px;
+  padding:9px 12px;
+  border:1px dashed rgba(255,107,107,.55);
+  border-radius:10px;
+  background:rgba(255,107,107,.08);
+  color:#ffb3b3;
+  font-size:.82rem;
+}
+.fw-form-err.show{display:block}
+
+/* ---- buttons ---- */
+.fw-actions{display:flex;gap:10px;align-items:center;margin-top:18px}
+.fw-submit{
+  flex:1;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 20px;
+  border:none;border-radius:999px;
+  background:linear-gradient(180deg, var(--fw-green), var(--fw-green-deep));
+  color:#04140D;
+  font-family:var(--fw-display);
+  font-size:.93rem;font-weight:700;
+  cursor:pointer;
+  box-shadow:0 14px 34px -16px rgba(0,255,156,.9);
+  transition:transform .2s, box-shadow .3s, opacity .2s;
+}
+.fw-submit:hover{transform:translateY(-2px)}
+.fw-submit:disabled{opacity:.7;cursor:progress;transform:none}
+.fw-submit:focus-visible{outline:2px solid var(--fw-blue);outline-offset:3px}
+.fw-cancel{
+  padding:13px 18px;
+  border:1px solid var(--fw-line);
+  border-radius:999px;
+  background:transparent;
+  color:var(--fw-dim);
+  font-family:var(--fw-display);
+  font-size:.9rem;font-weight:600;
+  cursor:pointer;
+  transition:color .2s, border-color .2s;
+}
+.fw-cancel:hover{color:#fff;border-color:var(--fw-green)}
+
+/* spinning loader inside the submit button */
+.fw-spin{
+  width:14px;height:14px;
+  border:2px solid rgba(4,20,13,.35);
+  border-top-color:#04140D;
+  border-radius:50%;
+  animation:fw-spin .7s linear infinite;
+}
+@keyframes fw-spin{to{transform:rotate(360deg)}}
+
+
+/* ------------------------------------------- 6. Success screen --------- */
+.fw-success{
+  display:none;
+  padding:22px 6px 10px;
+  text-align:center;
+}
+.fw-success.show{display:block}
+.fw-success .fw-check{
+  width:74px;height:74px;
+  margin:0 auto 16px;
+}
+.fw-success .fw-check circle{
+  fill:none;stroke:var(--fw-green);stroke-width:3;
+  stroke-dasharray:160;stroke-dashoffset:160;
+  animation:fw-draw .55s .05s cubic-bezier(.2,.7,.2,1) forwards;
+}
+.fw-success .fw-check path{
+  fill:none;stroke:var(--fw-green);stroke-width:4;
+  stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:48;stroke-dashoffset:48;
+  animation:fw-draw .4s .45s cubic-bezier(.2,.7,.2,1) forwards;
+}
+@keyframes fw-draw{to{stroke-dashoffset:0}}
+.fw-success h3{
+  font-family:var(--fw-display);
+  font-size:1.7rem;font-weight:700;
+  background:linear-gradient(100deg, var(--fw-green), var(--fw-blue));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.fw-success p{margin-top:8px;font-size:.92rem;color:var(--fw-dim);max-width:36ch;margin-inline:auto}
+.fw-success .fw-submit{margin-top:20px;flex:0 0 auto;padding-inline:34px}
+
+
+/* ------------------------------------- 7. Mobile bottom sheet ---------- */
+@media (max-width: 640px){
+  .fw-overlay{
+    align-items:flex-end;
+    padding:0;
+  }
+  .fw-modal{
+    width:100%;
+    max-height:92vh;
+    border-radius:24px 24px 0 0;
+    padding:22px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+    transform:translateY(100%);          /* slide-up instead of scale */
+  }
+  .fw-overlay.is-open .fw-modal{transform:none}
+  .fw-tabs .fw-tab{font-size:.8rem;padding:9px 6px}
+  .fw-actions{flex-direction:column-reverse}
+  .fw-submit,.fw-cancel{width:100%}
+}
+
+
+/* --------------------------------------------- 7b. Reduced motion ------ */
+@media (prefers-reduced-motion: reduce){
+  .fw-trigger::after{animation:none}
+  .fw-overlay,.fw-modal,.fw-close,.fw-tab,.fw-submit{transition:none !important}
+  .fw-success .fw-check circle,
+  .fw-success .fw-check path{animation-duration:.001ms !important}
+  .fw-spin{animation-duration:.7s !important}
+}

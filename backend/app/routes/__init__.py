@@ -7,10 +7,11 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from . import clip_maker, editor, notes, summarizer, video_to_text
+from . import ai_clipping, clip_maker, editor, editor_app, notes, summarizer, video_to_text
 from .common import api_router
 
-for _module in (clip_maker, editor, summarizer, video_to_text, notes):
+for _module in (ai_clipping, clip_maker, editor, editor_app, summarizer, video_to_text, notes):
     api_router.include_router(_module.router)
 
-__all__ = ["api_router", "clip_maker", "editor", "summarizer", "video_to_text", "notes"]
+__all__ = ["api_router", "ai_clipping", "clip_maker", "editor", "editor_app",
+           "summarizer", "video_to_text", "notes"]

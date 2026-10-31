@@ -63,11 +63,18 @@ def health() -> dict:
         "llm": "on" if llm_configured() else "local-fallback",
         "llm_provider": provider_label(),
         "media_mount": f"/{MEDIA_MOUNT}",
+        "fonts_mount": "/fonts",
     }
 
 
 # rendered clips, posters, exports (absolute paths under MEDIA_DIR)
 app.mount(f"/{MEDIA_MOUNT}", StaticFiles(directory=str(MEDIA_DIR)), name="media")
+
+# Vendored caption fonts. Serving the same files the renderer hands to libass
+# keeps the burned-in export pixel-identical to the browser preview.
+FONTS_DIR = BASE_DIR / "assets" / "fonts"
+FONTS_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/fonts", StaticFiles(directory=str(FONTS_DIR)), name="fonts")
 
 # the static frontend, if it sits next to the backend folder
 if (SITE_DIR / "index.html").is_file():

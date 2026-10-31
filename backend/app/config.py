@@ -25,6 +25,19 @@ for _p in (WORK_DIR, MEDIA_DIR, UPLOAD_DIR, DOWNLOAD_DIR):
 MEDIA_MOUNT = "media"
 
 # ---------------------------------------------------------------------------
+# Billing — the single central switch for the whole site
+# ---------------------------------------------------------------------------
+# UNLIMITED_CREDITS=true  (default) -> no action ever charges, no balance check
+#                                   ever fails, every API answers "unlimited".
+# UNLIMITED_CREDITS=false           -> the credit system behaves exactly as
+#                                   before (charge, 402, upgrade prompt).
+# Flip it from the environment or from this one constant; nothing else in the
+# codebase needs to change.
+UNLIMITED_CREDITS: bool = os.getenv(
+    "UNLIMITED_CREDITS", "true"
+).strip().lower() not in {"0", "false", "no", "off"}
+
+# ---------------------------------------------------------------------------
 # Media pipeline
 # ---------------------------------------------------------------------------
 FFPROBE_BIN = os.getenv("WV_FFPROBE", "ffprobe")

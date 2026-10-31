@@ -30,6 +30,7 @@ class Task:
     error: Optional[str] = None
     created_at: float = field(default_factory=time.time)
     updated_at: float = field(default_factory=time.time)
+    cancel_requested: bool = False
 
     def public(self) -> Dict[str, Any]:
         return {
@@ -41,7 +42,23 @@ class Task:
             "steps": self.steps,
             "result": self.result,
             "error": self.error,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
         }
+
+
+class TaskCancelled(RuntimeError):
+    """Raised inside a worker when the task has been cancelled."""
+
+
+def check_cancel(task_id: str) -> None:
+    """Raise :class:`TaskCancelled` when the UI cancelled this task.
+
+    Long pipelines call this between stages and inside their progress
+    callbacks so a cancelled job stops instead of finishing silently.
+    """
+    if STORE.cancelled(task_id):
+        raise TaskCancelled(f"task {task_id} cancelled")
 
 
 class TaskStore:
@@ -111,6 +128,39 @@ class TaskStore:
             task.error = error
             task.updated_at = time.time()
 
+    def cancel(self, task_id: str) -> bool:
+        """Ask a running task to stop. Returns False for an unknown task."""
+        with self._lock:
+            task = self._tasks.get(task_id)
+            if not task:
+                return False
+            task.cancel_requested = True
+            if task.status in ("queued", "running"):
+                task.stage = "Cancelling…"
+            task.updated_at = time.time()
+            return True
+
+    def cancelled(self, task_id: str) -> bool:
+        with self._lock:
+            task = self._tasks.get(task_id)
+            return bool(task and task.cancel_requested)
+
+    def mark_cancelled(self, task_id: str) -> None:
+        with self._lock:
+            task = self._tasks.get(task_id)
+            if not task:
+                return
+            task.status = "cancelled"
+            task.stage = "Cancelled"
+            task.error = "cancelled by user"
+            task.updated_at = time.time()
+
+    def list(self, feature: Optional[str] = None, limit: int = 50) -> List[Task]:
+        with self._lock:
+            tasks = [t for t in self._tasks.values() if not feature or t.feature == feature]
+        tasks.sort(key=lambda t: t.created_at, reverse=True)
+        return tasks[:limit]
+
     # -- execution --------------------------------------------------------
     @staticmethod
     def run(task: Task, fn: Callable[[], Dict[str, Any]], store: "TaskStore") -> None:
@@ -120,7 +170,12 @@ class TaskStore:
             store.update(task.id, status="running", stage="Starting")
             try:
                 result = fn()
+                if store.cancelled(task.id):
+                    store.mark_cancelled(task.id)
+                    return
                 store.finish(task.id, result)
+            except TaskCancelled:
+                store.mark_cancelled(task.id)
             except Exception as exc:            # noqa: BLE001 - surface to UI
                 traceback.print_exc()
                 store.fail(task.id, f"{type(exc).__name__}: {exc}")

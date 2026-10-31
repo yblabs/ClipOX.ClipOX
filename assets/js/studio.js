@@ -25,6 +25,8 @@
 
   const show = (el, on = true) => { if (el) el.hidden = !on; };
   const fail = (el, msg) => { if (!el) return; el.hidden = !msg; el.textContent = msg || ''; };
+  /** bind only when the element exists (a tool panel may have been removed) */
+  const on = (sel, ev, fn) => { const el = $(sel); if (el) el.addEventListener(ev, fn); };
 
   async function copyText(text, btn) {
     try {
@@ -153,10 +155,10 @@
   }
 
   /* ------------------------------------------------------------- tool tabs */
-  const TOOLS = ['clips', 'editor', 'summarizer', 'v2t', 'notes'];
+  const TOOLS = ['summarizer', 'v2t', 'notes'];
 
   function activate(tool, push = true) {
-    if (!TOOLS.includes(tool)) tool = 'clips';
+    if (!TOOLS.includes(tool)) tool = 'summarizer';
     $$('.stab').forEach((b) => b.classList.toggle('active', b.dataset.tool === tool));
     $$('.tool-panel').forEach((p) => p.classList.toggle('active', p.id === 'tool-' + tool));
     if (push && location.hash !== '#' + tool) history.replaceState(null, '', '#' + tool);
@@ -190,7 +192,7 @@
   const PALETTE_HEX = {
     classic: ['#ffe14d', '#ffffff'], white: ['#ffffff', '#ffffff'],
     neon: ['#00fff7', '#f2ffff'], contrast: ['#ffe14d', '#ffffff'],
-    brand: ['#2bf5a0', '#ffffff'], ocean: ['#38bdf8', '#eaf6ff'],
+    brand: ['#00ff9c', '#ffffff'], ocean: ['#1e90ff', '#eaf6ff'],
   };
   const SIZE_PX = { small: 17, medium: 23, large: 30 };
 
@@ -342,7 +344,7 @@
     }
   }
 
-  $('#clipGenerate').addEventListener('click', generateClips);
+  on('#clipGenerate', 'click', generateClips);
 
   const META_TABS = [
     { key: 'youtube', label: 'YouTube' },
@@ -580,9 +582,9 @@
     }
   }
 
-  $('#editLoad').addEventListener('click', loadTranscript);
+  on('#editLoad', 'click', loadTranscript);
 
-  $('#editSilence').addEventListener('click', async () => {
+  on('#editSilence', 'click', async () => {
     const src = ($('#editSource').value || '').trim();
     const errBox = $('#editError');
     fail(errBox, '');
@@ -604,7 +606,7 @@
     }
   });
 
-  $('#editReset').addEventListener('click', () => {
+  on('#editReset', 'click', () => {
     if (editorState.lines) {
       editorState.lines.forEach((l) => { l.text = l.orig; });
       editorState.removed = new Set();
@@ -672,8 +674,8 @@
     }
   }
 
-  $('#editRender').addEventListener('click', renderFinal);
-  $('#editCopyPath').addEventListener('click', (e) => copyText(e.currentTarget.dataset.path || '', e.currentTarget));
+  on('#editRender', 'click', renderFinal);
+  on('#editCopyPath', 'click', (e) => copyText(e.currentTarget.dataset.path || '', e.currentTarget));
 
   /* ======================================================== 3. SUMMARIZER == */
   const sumState = { options: { length: 'detailed', formats: { chapters: true, actions: true, moments: true } }, taskId: null, summary: null };
@@ -1054,7 +1056,7 @@
   });
 
   /* ================================================================ boot == */
-  activate(location.hash.slice(1) || 'clips', false);
+  activate(location.hash.slice(1) || 'summarizer', false);
   paintPreview();
   paintEditStyle();
   probeBackend();
