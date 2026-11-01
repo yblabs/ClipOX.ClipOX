@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Framewright — the video workbench that runs in your browser</title>
-<meta name="description" content="Framewright reads your footage end to end, then hands back clips, captions, transcripts and notes — an entire post-production pass without the timeline grind.">
+<title>ClipOX — the video workbench that runs in your browser</title>
+<meta name="description" content="ClipOX reads your footage end to end, then hands back clips, captions, transcripts and notes — an entire post-production pass without the timeline grind.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -13,7 +13,8 @@
 <link rel="stylesheet" href="assets/css/framecraft.css">
 <link rel="stylesheet" href="assets/css/feedback.css">
 <!-- Original favicon: dark tile, emerald frame corners, electric-blue cut. -->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%230B1116'/><path d='M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38' stroke='%2300FF9C' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/><path d='M22 42 42 22' stroke='%231E90FF' stroke-width='4' stroke-linecap='round'/></svg>">
+<link rel="icon" type="image/png" href="favicon-48.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -29,12 +30,9 @@
 <!-- ============================== floating pill navbar ============================== -->
 <div class="masthead" data-masthead>
   <nav class="pill" aria-label="Primary">
-    <a class="mark" href="index.html" aria-label="Framewright home">
-      <svg class="mark-glyph" viewBox="0 0 64 64" aria-hidden="true">
-        <path d="M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M22 42 42 22" stroke="var(--blue)" stroke-width="5" stroke-linecap="round"/>
-      </svg>
-      <span class="mark-word">Frame<span class="mark-tint">wright</span></span>
+    <a class="mark" href="index.html" aria-label="ClipOX home">
+      <img class="mark-glyph" src="assets/img/clipox-icon.png" alt="" width="26" height="26" decoding="async">
+      <span class="mark-word">Clip<span class="mark-tint">OX</span></span>
     </a>
 
     <ul class="menu" id="primaryMenu">
@@ -129,7 +127,7 @@
       <h1 class="h1">Cut the hours,<br><span class="tint">keep the story.</span></h1>
       <p class="rotator" data-rotator aria-live="polite">Find the moment that matters.</p>
       <p class="lede">
-        Hand over a link or a file. Framewright reads the whole take — words, speakers,
+        Hand over a link or a file. ClipOX reads the whole take — words, speakers,
         silences, scene changes — then hands back clips, captions, chapters and a
         transcript you can edit like a document.
       </p>
@@ -486,7 +484,7 @@
 
     <div class="qa-list">
       <details class="qa" open>
-        <summary>What does Framewright actually do with a video?<span class="qa-x" aria-hidden="true"></span></summary>
+        <summary>What does ClipOX actually do with a video?<span class="qa-x" aria-hidden="true"></span></summary>
         <p>It runs a full post pass: a word-by-word transcript with speaker turns, scene and loudness maps, ranked clip candidates, caption styles and chapter notes — then lets you cut the footage by editing the text.</p>
       </details>
       <details class="qa">
@@ -537,11 +535,8 @@
     <div class="foot-top">
       <div class="foot-brand">
         <a class="mark" href="index.html">
-          <svg class="mark-glyph" viewBox="0 0 64 64" aria-hidden="true">
-            <path d="M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M22 42 42 22" stroke="var(--blue)" stroke-width="5" stroke-linecap="round"/>
-          </svg>
-          <span class="mark-word">Frame<span class="mark-tint">wright</span></span>
+          <img class="mark-glyph" src="assets/img/clipox-icon.png" alt="" width="26" height="26" loading="lazy" decoding="async">
+          <span class="mark-word">Clip<span class="mark-tint">OX</span></span>
         </a>
         <p>The workbench for people who'd rather tell the story than babysit the timeline.</p>
         <div class="socials">
@@ -586,7 +581,7 @@
     </div>
 
     <div class="foot-base">
-      <p>© <span data-year>2026</span> Framewright. Cut with care.</p>
+      <p>© <span data-year>2026</span> ClipOX. Cut with care.</p>
       <p class="foot-fine">Every graphic on this page is drawn in CSS and SVG — no photography, no stock, no third-party artwork.</p>
     </div>
   </div>

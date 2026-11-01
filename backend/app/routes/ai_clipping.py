@@ -815,7 +815,7 @@ def export_clips(body: ExportBody) -> Dict[str, Any]:
                 doc["local_path"], moment, out_dir, name=name, height=height,
                 style=(doc.get("settings") or {}).get("style"), transcript=transcript,
                 captions=options["captions"], hook_overlay=options["hook"],
-                watermark="Framewright" if options["watermark"] else "",   # brand matches the site
+                watermark="ClipOX" if options["watermark"] else "",   # brand matches the site
                 cold_open=options["cold_open"], preset="veryfast", crf=20,
                 on_progress=lambda p: STORE.update(task.id, progress=3 + ((i + p) / len(moments)) * 85),
             )

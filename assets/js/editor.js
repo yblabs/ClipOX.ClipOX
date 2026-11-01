@@ -685,7 +685,7 @@ window.WVE = (function () {
     ctx.textAlign = 'right';
     ctx.textBaseline = 'bottom';
     ctx.fillStyle = 'rgba(255,255,255,.9)';
-    ctx.fillText('Framewright', W - 10, H - 10);   /* CHANGED: brand matches index.html */
+    ctx.fillText('ClipOX', W - 10, H - 10);   /* CHANGED: brand matches index.html */
     ctx.restore();
   }
 

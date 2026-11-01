@@ -481,7 +481,7 @@ def build_ass(
     if watermark:
         events.append(
             f"Dialogue: 4,0:00:00.00,9:59:59.00,Watermark,,0,0,0,,"
-            f"{{\\an3\\pos({w - 28},{h - 28})\\fad(300,300)}}Framewright")   # brand matches the site
+            f"{{\\an3\\pos({w - 28},{h - 28})\\fad(300,300)}}ClipOX")   # brand matches the site
 
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)

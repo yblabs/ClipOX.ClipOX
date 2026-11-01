@@ -46,12 +46,8 @@
         '<div class="foot-top">' +
           '<div class="foot-brand">' +
             '<a class="mark" href="index.html">' +
-              '<svg class="mark-glyph" viewBox="0 0 64 64" aria-hidden="true">' +
-                '<path d="M26 14H14v12M38 14h12v12M14 38v12h12M50 38v12H38" fill="none" ' +
-                  'stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>' +
-                '<path d="M22 42 42 22" stroke="var(--blue)" stroke-width="5" stroke-linecap="round"/>' +
-              '</svg>' +
-              '<span class="mark-word">Frame<span class="mark-tint">wright</span></span>' +
+              '<img class="mark-glyph" src="assets/img/clipox-icon.png" alt="" width="26" height="26" loading="lazy" decoding="async">' +
+              '<span class="mark-word">Clip<span class="mark-tint">OX</span></span>' +
             '</a>' +
             '<p>The workbench for people who&rsquo;d rather tell the story than babysit the timeline.</p>' +
             '<div class="socials">' +
@@ -91,7 +87,7 @@
           '</nav>' +
         '</div>' +
         '<div class="foot-base">' +
-          '<p>&copy; <span data-app-year>' + year + '</span> Framewright. Cut with care.</p>' +
+          '<p>&copy; <span data-app-year>' + year + '</span> ClipOX. Cut with care.</p>' +
           '<p class="foot-fine">Every graphic on this site is drawn in CSS and SVG — no photography, ' +
           'no stock, no third-party artwork.</p>' +
         '</div>' +
